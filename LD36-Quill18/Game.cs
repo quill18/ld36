@@ -51,7 +51,8 @@ namespace LD36Quill18
         #region bookkeeping
         private bool exit = false;
         private bool doTick = false;
-        public  AimingOverlay aimingOverlay;
+        public AimingOverlay aimingOverlay;
+        public LookingOverlay lookingOverlay;
         #endregion
 
         private int statAreaWidth = 16;
@@ -84,6 +85,10 @@ namespace LD36Quill18
                 if (aimingOverlay != null)
                 {
                     aimingOverlay.Draw();
+                }
+                if (lookingOverlay != null)
+                {
+                    lookingOverlay.Draw();
                 }
 
                 PrintStats();
@@ -171,7 +176,59 @@ namespace LD36Quill18
 
             }
 
+            if (lookingOverlay != null)
+            {
+                PrintLookingInfo(Map.CurrentFloor.GetTile(lookingOverlay.X, lookingOverlay.Y));
+            }
+            else if (aimingOverlay != null)
+            {
+                PrintLookingInfo(Map.CurrentFloor.GetTile(aimingOverlay.X, aimingOverlay.Y));
+            }
+
+
             PrintHotkeys();
+        }
+
+        void PrintLookingInfo(Tile tile)
+        {
+            int x = FrameBuffer.Instance.Width - statAreaWidth - 1;
+            int y = 8;
+            frameBuffer.Write(x, y, "\u255F");
+            for (int i = 1; i < statAreaWidth; i++)
+            {
+                frameBuffer.Write(x + i, y, "\u2500");
+
+            }
+
+            y++;
+            y++;
+
+            frameBuffer.Write(x + 2, y, tile.TileType.ToString());
+
+            y++;
+
+            if (tile.Character != null)
+            {
+                frameBuffer.Write(x + 2, y, tile.Character.Name);
+            }
+
+            y++;
+
+            if (tile.Item != null)
+            {
+                frameBuffer.Write(x + 2, y, tile.Item.Name);
+            }
+
+            y++;
+            y++;
+
+            frameBuffer.Write(x, y, "\u255F");
+            for (int i = 1; i < statAreaWidth; i++)
+            {
+                frameBuffer.Write(x + i, y, "\u2500");
+
+            }
+
         }
 
         void PrintHotkeys()
@@ -182,6 +239,8 @@ namespace LD36Quill18
             frameBuffer.Write(x, y, "[F]ire");
             y++;
             frameBuffer.Write(x, y, "[I]nventory");
+            y++;
+            frameBuffer.Write(x, y, "[L]ook");
             y++;
             frameBuffer.Write(x, y, "[CTRL-Q] Quit");
             y++;

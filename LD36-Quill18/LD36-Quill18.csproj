@@ -53,6 +53,7 @@
     <Compile Include="ItemList.cs" />
     <Compile Include="Intro.cs" />
     <Compile Include="KeyboardHandler.cs" />
+    <Compile Include="LookingOverlay.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
