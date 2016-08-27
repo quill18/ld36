@@ -1,0 +1,15 @@
+﻿<Properties StartupItem="LD36-Quill18\LD36-Quill18.csproj">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.Workbench ActiveDocument="LD36-Quill18\FrameBuffer.cs">
+    <Files>
+      <File FileName="LD36-Quill18\Game.cs" Line="171" Column="9" />
+      <File FileName="LD36-Quill18\FrameBuffer.cs" Line="28" Column="10" />
+      <File FileName="LD36-Quill18\Program.cs" Line="16" Column="1" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.ItemProperties.LD36-Quill18 PreferredExecutionTarget="MonoDevelop.Default" />
+</Properties>
