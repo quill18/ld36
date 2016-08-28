@@ -254,6 +254,10 @@ namespace LD36Quill18
                 if (t.IsLookable() == false)
                 {
                     // Whack.
+                    if (this == PlayerCharacter.Instance)
+                    {
+                        Game.Instance.Message("Your shot hits a wall.");
+                    }
                     return;
                 }
 
@@ -271,10 +275,10 @@ namespace LD36Quill18
 
                     if (this == Game.Instance.PlayerCharacter)
                     {
-                        Game.Instance.Message(string.Format("You hit {0} for {1} damage!", victim.Name, dmg));
+                        Game.Instance.Message(string.Format("You shoot {0} for {1} damage!", victim.Name, dmg));
                     }
                     else {
-                        Game.Instance.Message(string.Format("{0} hits you for {1} damage!", this.Name, dmg));
+                        Game.Instance.Message(string.Format("{0} shoots you for {1} damage!", this.Name, dmg));
                     }
 
 
@@ -302,9 +306,9 @@ namespace LD36Quill18
                 OnMeleeAttack(this, target);
             }
 
-            int attackRoll = Game.Instance.Random.Next(1, 20) + ToHitBonus;
+            int attackRoll = Game.Instance.Random.Next(1, 21);
 
-            if (attackRoll < target.DodgeBonus + 10)
+            if (attackRoll!=20 && (attackRoll + ToHitBonus) < target.DodgeBonus + 10)
             {
                 if (this == Game.Instance.PlayerCharacter)
                 {

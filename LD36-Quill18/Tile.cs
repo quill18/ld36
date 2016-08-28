@@ -105,10 +105,11 @@ namespace LD36Quill18
                         mc.Tile = this;
 
                         // Buff the monsters as we go down in level.
-                        mc.RangedDamage += (Floor.FloorIndex-1) / 2;
+                        mc.Health = mc.MaxHealth += Floor.FloorIndex;
+                        mc.RangedDamage += (Floor.FloorIndex - 1) / 2;
                         mc.MeleeDamage += Floor.FloorIndex / 2;
                         mc.DamageReduction += Floor.FloorIndex / 3;
-                        mc.ToHitBonus += (Floor.FloorIndex+1) / 3;
+                        mc.ToHitBonus += (Floor.FloorIndex) / 2;
                         mc.DodgeBonus += Floor.FloorIndex / 3;
 
                         return;

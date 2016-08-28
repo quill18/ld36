@@ -62,6 +62,12 @@ namespace LD36Quill18
                         case InputMode.Fabricator:
                             Update_Keyboard_Fabricator(cki);
                             break;
+                        case InputMode.Help:
+                            Update_Keyboard_SimpleScreen(cki);
+                            break;
+                        case InputMode.LogView:
+                            Update_Keyboard_SimpleScreen(cki);
+                            break;
                     }
                 }
             }
@@ -158,10 +164,21 @@ namespace LD36Quill18
                 Game.Instance.InputMode = InputMode.Inventory;
                 FrameBuffer.Instance.Clear();
             }
+            else if (cki.Key == ConsoleKey.V)
+            {
+                Game.Instance.InputMode = InputMode.LogView;
+                FrameBuffer.Instance.Clear();
+            }
+            else if (cki.Key == ConsoleKey.H)
+            {
+                Game.Instance.InputMode = InputMode.Help;
+                FrameBuffer.Instance.Clear();
+            }
         }
 
         public static bool inventoryExamineMode = false;
         public static bool inventoryEquippedMode = false;
+        public static bool inventoryDeleteMode = false;
 
         static void Update_Keyboard_Inventory(ConsoleKeyInfo cki)
         {
@@ -172,6 +189,7 @@ namespace LD36Quill18
                 RedrawRequests.FullRedraw();
                 inventoryExamineMode = false;
                 inventoryEquippedMode = false;
+                inventoryDeleteMode = false;
             }
             else if (cki.KeyChar == '/' || cki.KeyChar == '?')
             {
@@ -180,6 +198,10 @@ namespace LD36Quill18
             else if (cki.Key == ConsoleKey.Tab)
             {
                 inventoryEquippedMode = !inventoryEquippedMode;
+            }
+            else if (cki.Key == ConsoleKey.Delete)
+            {
+                inventoryDeleteMode = !inventoryDeleteMode;
             }
             else
             {
@@ -218,7 +240,16 @@ namespace LD36Quill18
                     }
                     else
                     {
-                        PlayerCharacter.Instance.UseItem(i);
+                        if (inventoryDeleteMode)
+                        {
+                            Game.Instance.Message(PlayerCharacter.Instance.Items[i].Name + " has been scrapped for $10");
+                            PlayerCharacter.Instance.RemoveItem(i);
+                            PlayerCharacter.Instance.Money += 10;
+                        }
+                        else 
+                        {
+                            PlayerCharacter.Instance.UseItem(i);
+                        }
                     }
                 }
 
@@ -355,6 +386,16 @@ namespace LD36Quill18
                 overlay.Y += 0;
             }
 
+        }
+
+        static void Update_Keyboard_SimpleScreen(ConsoleKeyInfo cki)
+        {
+            if (cki.Key == ConsoleKey.Escape)
+            {
+                Game.Instance.InputMode = InputMode.Normal;
+                FrameBuffer.Instance.Clear();
+                RedrawRequests.FullRedraw();
+            }
         }
 
         static void Update_Keyboard_Fabricator(ConsoleKeyInfo cki)

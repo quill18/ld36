@@ -13,19 +13,46 @@ namespace LD36Quill18
 
             c = '%';
             Items[c] = new Item();
-            Items[c].Name = "Battery (9v)";
+            Items[c].Name = "Small Battery (9v)";
             Items[c].Description = "Enough for a few more steps.";
             Items[c].Chixel = new Chixel(c, ConsoleColor.Green);
-            Items[c].OnUse += (item) => { OnUse_ChangeEnergy(item, 250); };
+            Items[c].OnUse += (item) => { OnUse_ChangeEnergy(item, 90); };
             Items[c].UsesLeft = 1;
+
+            c = 'B';
+            Items[c] = new Item();
+            Items[c].Name = "Industrial Battery (24v)";
+            Items[c].Description = "Oooooh...that's the stuff!";
+            Items[c].Chixel = new Chixel(c, ConsoleColor.Green);
+            Items[c].OnUse += (item) => { OnUse_ChangeEnergy(item, 240); };
+            Items[c].UsesLeft = 1;
+
 
             c = 'W';
             Items[c] = new Item();
             Items[c].Name = "Welding Kit";
             Items[c].Description = "Enough to seal a few holes in your armor plating.";
             Items[c].Chixel = new Chixel(c, ConsoleColor.Green);
-            Items[c].OnUse += (item) => { OnUse_Heal(item, 25); };
+            Items[c].OnUse += (item) => { OnUse_Heal(item, 35); };
             Items[c].UsesLeft = 1;
+
+            c = 'w';
+            Items[c] = new Item();
+            Items[c].Name = "WD-41";
+            Items[c].Description = "Helps keep your joints moving!";
+            Items[c].Chixel = new Chixel(c, ConsoleColor.Green);
+            Items[c].OnUse += (item) => { OnUse_Heal(item, 15); };
+            Items[c].UsesLeft = 1;
+
+            c = 'D';
+            Items[c] = new Item();
+            Items[c].Name = "Duct Tape";
+            Items[c].Description = "Cures what ails you!";
+            Items[c].Chixel = new Chixel(c, ConsoleColor.Green);
+            Items[c].OnUse += (item) => { OnUse_Heal(item, 100); };
+            Items[c].UsesLeft = 1;
+
+
 
             c = '!';
             Items[c] = new Item();

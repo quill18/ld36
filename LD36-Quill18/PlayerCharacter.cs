@@ -6,6 +6,7 @@ namespace LD36Quill18
     public enum EquipSlot { 
         Head,               // Accuracy
         Chest,              // Max health / energy
+        Shield,
         Arm,                // Primarily melee damage
         Shoulder,   // Ranged -- very resource intensive.
         Legs                // Dodging
@@ -148,17 +149,21 @@ namespace LD36Quill18
         {
             base.Update();
 
-            if (Energy <= 0)
-            {
-                Game.Instance.Message("POWER CELL DEPLETED -- Operating on Reserves.");
-            }
-
             if (queuedFireAt)
             {
                 queuedFireAt = false;
                 FireTowards(target_dX, target_dY);
             }
-            else {
+            else if(target_dX != X || target_dY != Y) {
+                // We are moving
+                
+                if (Energy <= 0)
+                {
+                    Game.Instance.Message("POWER CELL DEPLETED -- System Failure Imminent!");
+                    TakeDamage(1);
+                    Console.Beep();
+                }
+
                 MoveBy(target_dX, target_dY);
             }
 
@@ -181,6 +186,7 @@ namespace LD36Quill18
                         {
                             RemoveItem(keyItem);
                         }
+                        break;
                     }
                 }
             }
@@ -270,17 +276,24 @@ namespace LD36Quill18
             Tile.Item = item;
         }
 
+        public void RemoveItem(int i)
+        {
+                Items[i] = null;
+                return;
+        }
+
         public void RemoveItem(Item item)
         {
             for (int i = 0; i < Items.Length; i++)
             {
                 if (Items[i] == item)
                 {
-                    Items[i] = null;
+                    RemoveItem(i);
                     return;
                 }
             }
         }
+
 
         public void UseItem(int i)
         {

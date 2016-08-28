@@ -21,11 +21,11 @@ namespace LD36Quill18
 
             c = 'm';
             Monsters[c] = new MonsterCharacter();
-            Monsters[c].Name = "Tuboid Moderator";
+            Monsters[c].Name = "Tuboid Marauder";
             Monsters[c].Description = "";
             Monsters[c].Chixel = new Chixel(c, ConsoleColor.Magenta);
-            Monsters[c].Health = Monsters[c].MaxHealth = 10;
-            Monsters[c].MeleeDamage = 6;
+            Monsters[c].Health = Monsters[c].MaxHealth = 5;
+            Monsters[c].MeleeDamage = 10;
 
 
             c = 'i';
@@ -33,8 +33,8 @@ namespace LD36Quill18
             Monsters[c].Name = "Reptoid Infiltrator";
             Monsters[c].Description = "";
             Monsters[c].Chixel = new Chixel(c, ConsoleColor.Magenta);
-            Monsters[c].Health = Monsters[c].MaxHealth = 5;
-            Monsters[c].MeleeDamage = 4;
+            Monsters[c].Health = Monsters[c].MaxHealth = 10;
+            Monsters[c].MeleeDamage = 6;
 
 
             c = 't';

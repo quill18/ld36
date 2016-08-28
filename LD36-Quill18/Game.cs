@@ -4,7 +4,7 @@ using System.Threading;
 
 namespace LD36Quill18
 {
-    public enum InputMode { Normal, Aiming, Inventory, Looking, Fabricator }
+    public enum InputMode { Normal, Aiming, Inventory, Looking, Fabricator, Help, LogView }
 
     public class Game
     {
@@ -107,6 +107,14 @@ namespace LD36Quill18
             {
                 DrawFabricatorScreen();
             }
+            else if (InputMode == InputMode.Help)
+            {
+                DrawHelpScreen();
+            }
+            else if (InputMode == InputMode.LogView)
+            {
+                DrawLogViewScreen();
+            }
             else
             {
                 Map.CurrentFloor.Update(doTick);
@@ -125,7 +133,11 @@ namespace LD36Quill18
 
             }
 
-            PrintMessages();
+            if (InputMode != InputMode.LogView)
+            {
+                PrintMessages();
+            }
+
             frameBuffer.DrawFrame();
 
             if(exit || Restart)
@@ -287,7 +299,7 @@ namespace LD36Quill18
         void PrintHotkeys()
         {
             int x = FrameBuffer.Instance.Width - statAreaWidth + 1;
-            int y = FrameBuffer.Instance.Height - 6;
+            int y = FrameBuffer.Instance.Height - 8;
 
             frameBuffer.Write(x, y, "[F]ire");
             y++;
@@ -299,6 +311,10 @@ namespace LD36Quill18
             y++;
             frameBuffer.Write(x, y, "> Go Down");
             y++;
+            frameBuffer.Write(x, y, "[V]iew Log");
+            y++;
+            frameBuffer.Write(x, y, "[H]elp");
+            y++;
             frameBuffer.Write(x, y, "[CTRL-Q]uit");
             y++;
 
@@ -308,6 +324,7 @@ namespace LD36Quill18
 
         void DrawFabricatorScreen()
         {
+            FrameBuffer.Instance.Write(30, FrameBuffer.Instance.Height - 3, "[ESC] to Exit this Screen");
             FrameBuffer.Instance.Write(5, 0, "              -- Augmentation Station --");
             FrameBuffer.Instance.Write(5, 1, "Improving near-scrap-metal with scrap-metal since 2092!");
             FrameBuffer.Instance.Write(5, 2, "           (Permanently upgrade a statistic.)");
@@ -329,6 +346,7 @@ namespace LD36Quill18
 
         void DrawInventoryScreen()
         {
+            FrameBuffer.Instance.Write(30, FrameBuffer.Instance.Height - 3, "[ESC] to Exit this Screen");
             FrameBuffer.Instance.Write(30, 0, "-- Inventory --");
             if (KeyboardHandler.inventoryExamineMode)
             {
@@ -360,6 +378,14 @@ namespace LD36Quill18
             else
             {
                 FrameBuffer.Instance.Write(20, 2, "Hit [TAB] to See Equiped");
+
+                ConsoleColor col = ConsoleColor.White;
+                if (KeyboardHandler.inventoryDeleteMode == true)
+                {
+                    col = ConsoleColor.Red;
+                }
+                FrameBuffer.Instance.Write(5, 3, "Hit [DELETE] followed by a letter to scrap an item.", col);
+
                 for (int i = 0; i < PlayerCharacter.Instance.Items.Length; i++)
                 {
                     bool col1 = i < PlayerCharacter.Instance.Items.Length / 2;
@@ -373,7 +399,7 @@ namespace LD36Quill18
 
                     char c = (char)((int)'a' + i);
 
-                    FrameBuffer.Instance.Write(x, y, string.Format("[{0}] {1}", c, name));
+                    FrameBuffer.Instance.Write(x, y, string.Format("[{0}] {1}", c, name), col);
                 }
             }
         }
@@ -451,6 +477,56 @@ namespace LD36Quill18
                 }
             }
         }
+
+        void DrawHelpScreen()
+        {
+            FrameBuffer.Instance.Write(30, FrameBuffer.Instance.Height - 3, "[ESC] to Exit this Screen");
+            FrameBuffer.Instance.Write(30, 0, "-- HELP --");
+
+            int y = 3;
+            FrameBuffer.Instance.Write(5, y++, "Use the Numpad or Arrow Keys to move around.");
+            y++;
+            FrameBuffer.Instance.Write(5, y++, "Use [<] and [>] on stairs to move up and down floors.");
+            y++;
+            FrameBuffer.Instance.Write(5, y++, "Moving into enemies will melee attack them");
+            FrameBuffer.Instance.Write(5, y++, "Moving on to items will pick them up.");
+            y++;
+            FrameBuffer.Instance.Write(5, y++, "Use [L] to look around, and [ENTER] to examine objects.");
+            y++;
+            FrameBuffer.Instance.Write(5, y++, Utility.WordWrap("If you have a ranged weapon equipped, [F] will enter Aiming Mode. [ENTER] fire."));
+            y++;
+            FrameBuffer.Instance.Write(5, y++, "Access your Inventory by pressing [I]. Items can be used or equipped.");
+            y++;
+            y++;
+            FrameBuffer.Instance.Write(5, y++, Utility.WordWrap("Your goal is to acquire the Yendorian Power Cell from the bottom of the complex."));
+
+
+        }
+
+        void DrawLogViewScreen()
+        {
+            FrameBuffer.Instance.Write(30, FrameBuffer.Instance.Height - 1, "[ESC] to Exit this Screen");
+            FrameBuffer.Instance.Write(30, 0, "-- VIEW LOG --");
+
+            int top = 2;
+            int numLinesToShow = FrameBuffer.Instance.Height - top - 2;
+
+            int startAtIndex = messageLog.Count - numLinesToShow;
+            if (startAtIndex < 0)
+                startAtIndex = 0;
+
+            for (int i = 0; i < numLinesToShow; i++)
+            {
+                if (startAtIndex + i >= messageLog.Count)
+                {
+                    break;
+                }
+
+                FrameBuffer.Instance.Write(2, top + i, messageLog[startAtIndex + i]);
+            }
+        }
+
+
     }
 }
 
