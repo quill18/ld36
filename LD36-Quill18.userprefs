@@ -1,5 +1,5 @@
 ﻿<Properties StartupItem="LD36-Quill18\LD36-Quill18.csproj">
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Release|x86" />
   <MonoDevelop.Ide.DebuggingService.PinnedWatches>
     <Watch file="LD36-Quill18\Floor.cs" line="100" offsetX="934" offsetY="2206" expression="RedrawRequests.Rects" liveUpdate="False" />
   </MonoDevelop.Ide.DebuggingService.PinnedWatches>
