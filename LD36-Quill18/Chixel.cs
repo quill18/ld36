@@ -12,6 +12,14 @@ namespace LD36Quill18
             this.Dirty = true;
         }
 
+        public Chixel(Chixel other)
+        {
+            this.Glyph = other.Glyph;
+            this.ForegroundColor = other.ForegroundColor;
+            this.BackgroundColor = other.BackgroundColor;
+            this.Dirty = true;
+        }
+
         public char Glyph { get; set; }
         public ConsoleColor ForegroundColor { get; set; }
         public ConsoleColor BackgroundColor { get; set; }

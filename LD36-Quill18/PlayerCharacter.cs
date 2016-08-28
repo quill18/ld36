@@ -22,26 +22,36 @@ namespace LD36Quill18
 
             Faction = Faction.Player;
 
+            Tile = tile;
+
             Health = MaxHealth = 100;
 
             Items = new Item[26];
+
+            Name = "BE-02";
 
             Energy = 1000;
             EnergyPerMove = DefaultEnergyPerMove;
             EnergyPerMelee = DefaultEnergyPerMelee;
             EnergyPerRanged = DefaultEnergyPerRanged;
+            VisionRadius = DefaultVisionRadius;
 
-            MeleeDamageFunc = DefaultMeleeAttackDamage;
-            RangedDamageFunc = DefaultRangedAttackDamage;
+            MeleeDamage = DefaultMeleeAttackDamage;
+            RangedDamage = DefaultRangedAttackDamage;
             OnRangedAttack += DefaultOnRangedAttack;
             OnMeleeAttack += DefaultOnMeleeAttack;
 
             EquippedItems = new Item[ Enum.GetValues(typeof(EquipSlot)).Length ];
+
         }
 
         public const int DefaultEnergyPerMelee = 2;
         public const int DefaultEnergyPerRanged = 10;
         public const int DefaultEnergyPerMove = 1;
+        public const int DefaultVisionRadius = 2;
+        public const int DefaultRangedAttackDamage = 6;
+        public const int DefaultMeleeAttackDamage = 6;
+
 
         static public PlayerCharacter Instance
         {
@@ -57,6 +67,8 @@ namespace LD36Quill18
         public int EnergyPerMove { get; set; }
         public int EnergyPerMelee { get; set; }
         public int EnergyPerRanged { get; set; }
+
+        public int VisionRadius { get; set; }
 
         public Item[] EquippedItems { get; set; }
 
@@ -96,13 +108,38 @@ namespace LD36Quill18
 
             // Are we on an item?
             Item item = Tile.Item;
-            if (item != null)
+            if (item != null && item.Static==false)
             {
                 AddItem(item);
             }
 
+            UpdateVision();
 
             return true;
+        }
+
+        public void UpdateVision()
+        {
+            // Set all tiles within our vision radius to WasSeen=true
+            for (int x = -(VisionRadius); x <= VisionRadius; x++)
+            {
+                for (int y = -VisionRadius; y <= VisionRadius; y++)
+                {
+                    // Manhattan distance
+                    //int d = Math.Abs(x) + Math.Abs(y);
+                    int d = (int)Math.Sqrt(x*x+y*y);
+                    if (d <= VisionRadius)
+                    {
+                        Tile t = Floor.GetTile(X + x, Y + y);
+                        if (t != null)
+                        {
+                            t.WasSeen = true;
+                            Floor.RedrawTileAt(X + x, Y + y);
+                        }
+                    }
+                }
+            }
+
         }
 
         public void AddItem(Item item)
@@ -221,18 +258,8 @@ namespace LD36Quill18
             this.Floor = Game.Instance.Map.GetFloor(floorNum);
             this.Floor.AddCharacter(this);
             Game.Instance.Map.CurrentFloor = this.Floor;
-            UpdateTile();
-            RedrawRequests.FullRedraw();
-        }
-
-        public static int DefaultRangedAttackDamage()
-        {
-            return Game.Instance.Random.Next(1, 6);
-        }
-
-        public static int DefaultMeleeAttackDamage()
-        {
-            return Game.Instance.Random.Next(1, 6);
+            this.Tile = this.Floor.GetTile(Tile.X, Tile.Y);
+            this.Floor.Recenter(true);
         }
 
 

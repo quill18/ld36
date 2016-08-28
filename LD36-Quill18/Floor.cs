@@ -51,11 +51,60 @@ namespace LD36Quill18
         private Tile[,] tiles;
         private HashSet<Character> characters;
 
+        public int ViewOffsetX { get; protected set; }
+        public int ViewOffsetY { get; protected set; }
+        private int centerThresholdX = 30;
+        private int centerThresholdY = 7;
+
+        /// <summary>
+        /// Redraws the tile at world coord x and y.
+        /// </summary>
+        /// <param name="x">Tile coord (not view).</param>
+        /// <param name="y">Tile coord (not view).</param>
+        public void RedrawTileAt(int x, int y)
+        {
+            x += ViewOffsetX;
+            y += ViewOffsetY;
+            RedrawRequests.Rects.Add(new Rect(x, y, 1, 1));
+        }
+
+        public void Recenter(bool forced = false)
+        {
+            if (PlayerCharacter.Instance.Floor != this)
+            {
+                return;
+            }
+
+            // Center the viewpoint such that the player in the middle
+            // of the rendering area.
+            Rect area = Game.Instance.LevelRenderArea;
+
+            // Viewport's center spot
+            int cX = area.Width / 2 + area.Left;
+            int cY = area.Height / 2 + area.Top;
+
+            // How far from this is the player's current rendered position?
+            int dX = cX - PlayerCharacter.Instance.X - ViewOffsetX;
+            int dY = cY - PlayerCharacter.Instance.Y - ViewOffsetY;
+
+            if (forced == false)
+            {
+                if (Math.Abs(dX) < centerThresholdX && Math.Abs(dY) < centerThresholdY)
+                    return;
+            }
+
+            // Update offset so player is in the center!
+            ViewOffsetX += dX;
+            ViewOffsetY += dY;
+            RedrawRequests.FullRedraw();
+        }
+
         public Tile GetTile(int x, int y)
         {
             if (x < 0 || x >= this.Width || y < 0 || y >= this.Height)
             {
-                throw new Exception();
+                //throw new Exception();
+                return null;
             }
 
             return tiles[x, y];
@@ -78,7 +127,7 @@ namespace LD36Quill18
             {
                 for (int y = 0; y < this.Height; y++)
                 {
-                    tiles[x, y].Draw();
+                    tiles[x, y].Draw(ViewOffsetX, ViewOffsetY);
                 }
             }
 
@@ -90,8 +139,11 @@ namespace LD36Quill18
             // Draw characters
             foreach (Character ch in characters)
             {
-                FrameBuffer.Instance.SetChixel(ch.X, ch.Y, ch.Chixel);
-                RedrawRequests.Rects.Add(new Rect(ch.X, ch.Y, 1, 1));
+                if (ch.Tile.WasSeen)
+                {
+                    FrameBuffer.Instance.SetChixel(ch.X + ViewOffsetX, ch.Y + ViewOffsetY, ch.Chixel);
+                    RedrawRequests.Rects.Add(new Rect(ch.X + ViewOffsetX, ch.Y + ViewOffsetY, 1, 1));
+                }
             }
         }
 
@@ -103,16 +155,12 @@ namespace LD36Quill18
                 {
                     for (int y = r.Top; y < r.Top + r.Height; y++)
                     {
-                        if (x < this.Width && y < this.Height)
+                        int tX = x - ViewOffsetX;
+                        int tY = y - ViewOffsetY;
+
+                        if(tX > 0 && tX < Width && tY > 0 && tY < Height)
                         {
-                            try
-                            {
-                                tiles[x, y].Draw();
-                            }
-                            catch (Exception e)
-                            {
-                                Game.Instance.DebugMessage(e.ToString());
-                            }
+                            tiles[tX, tY].Draw(ViewOffsetX, ViewOffsetY);
                         }
                     }
                 }
@@ -126,6 +174,7 @@ namespace LD36Quill18
         /// </summary>
         public void Update(bool doTick)
         {
+            Recenter();
             // First, redraw all floor tiles "under" characters,
             // and anywhere else that may have been overlayed
             RedrawRequestedArea();

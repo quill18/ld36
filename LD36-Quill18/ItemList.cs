@@ -11,7 +11,7 @@ namespace LD36Quill18
 
             char c;
 
-            c = 'B';
+            c = '%';
             Items[c] = new Item();
             Items[c].Name = "Battery (9v)";
             Items[c].Chixel = new Chixel(c, ConsoleColor.Green);
@@ -23,6 +23,14 @@ namespace LD36Quill18
             Items[c].Name = "Metal Scraps";
             Items[c].IsMoney = true;
             Items[c].Chixel = new Chixel(c, ConsoleColor.Red);
+
+            c = '&';
+            Items[c] = new Item();
+            Items[c].Name = "Unpower Warbot";
+            Items[c].Description = "Power cells are completely depleted.";
+            Items[c].Chixel = new Chixel(c, ConsoleColor.Red);
+            Items[c].Static = true;
+
 
 
 

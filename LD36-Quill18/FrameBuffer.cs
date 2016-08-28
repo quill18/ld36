@@ -15,8 +15,8 @@ namespace LD36Quill18
                 _instance = this;
             }
 
-            this.left = left;
-            this.top = top;
+            this.Left = left;
+            this.Top = top;
             this.Width = width;
             this.Height = height;
             Clear();
@@ -62,7 +62,7 @@ namespace LD36Quill18
                             Chixel ch = this.chixels[x, y];
                             if (ch != null && (ch.Dirty == true || forceDirty))
                             {
-                                Console.SetCursorPosition(x + left, y + top);
+                                Console.SetCursorPosition(x + Left, y + Top);
                                 Console.ForegroundColor = ch.ForegroundColor;
                                 Console.BackgroundColor = ch.BackgroundColor;
                                 Console.Write(ch.Glyph);
@@ -81,8 +81,8 @@ namespace LD36Quill18
 
         public void SetChixel(int x, int y, Char c, ConsoleColor fg_color = ConsoleColor.White, ConsoleColor bg_color = ConsoleColor.Black)
         {
-            x -= left;
-            y -= top;
+            x -= Left;
+            y -= Top;
             // check that the chixel is actually changed
             // if so, update values and set dirty
 
@@ -104,14 +104,31 @@ namespace LD36Quill18
 
         public void Write(int x, int y, string s, ConsoleColor fg_color=ConsoleColor.White, ConsoleColor bg_color=ConsoleColor.Black)
         {
+            // TODO: Detect ANSI escapes and output as a single write.
+
+            int initX = x;
+
             for (int i = 0; i < s.Length; i++)
             {
-                SetChixel(x + i, y, s[i], fg_color, bg_color);
+                if (s[i] == '\n')
+                {
+                    x = initX;
+                    y++;
+                    continue;
+                }
+
+                //if (s[i] == '\x1b')
+               // {
+                //    int ansiEnd = s.IndexOf('m', i);
+                //}
+
+                SetChixel(x, y, s[i], fg_color, bg_color);
+                x++;
             }
         }
 
-        private int left;
-        private int top;
+        private int Left;
+        private int Top;
         public int Width { get; protected set; } 
         public int Height { get; protected set; }
 

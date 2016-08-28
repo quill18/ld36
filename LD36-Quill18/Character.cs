@@ -19,8 +19,8 @@ namespace LD36Quill18
             this.Chixel = other.Chixel;
             this.MaxHealth = other.MaxHealth;
             this.Health = other.Health;
-            this.MeleeDamageFunc = other.MeleeDamageFunc;
-            this.RangedDamageFunc = other.MeleeDamageFunc;
+            this.MeleeDamage = other.MeleeDamage;
+            this.RangedDamage = other.RangedDamage;
             this.OnMeleeAttack = other.OnMeleeAttack;
             this.OnRangedAttack = other.OnRangedAttack;
         }
@@ -60,7 +60,27 @@ namespace LD36Quill18
             }
         }
         public Chixel Chixel { get; set; }
-        public Tile Tile { get; protected set; }
+        public Tile Tile { get
+            {
+                return _Tile;
+            }
+            set
+            {
+                if (_Tile != null && _Tile.Character == this)
+                    _Tile.Character = null;
+                
+                _Tile = value;
+
+                if (_Tile != null)
+                {
+                    this.X = _Tile.X;
+                    this.Y = _Tile.Y;
+                    this.Floor = _Tile.Floor;
+                    _Tile.Character = this;
+                }
+            }
+        }
+        private Tile _Tile;
 
         public Faction Faction { get; set; }
 
@@ -84,8 +104,8 @@ namespace LD36Quill18
 
         public int DodgeBonus { get; set; }
         public int ToHitBonus { get; set; }
-        public Func<int> MeleeDamageFunc { get; set; }
-        public Func<int> RangedDamageFunc { get; set; }
+        public int MeleeDamage { get; set; }    // Actual damage is random from 50% - 100%
+        public int RangedDamage { get; set; }    // Actual damage is random from 50% - 100%
         public event Action<Character, Character> OnMeleeAttack;
         public event Action<Character> OnRangedAttack;
         public int DamageReduction { get; set; }
@@ -106,6 +126,10 @@ namespace LD36Quill18
 
         public void TakeDamage(float dmg)
         {
+            dmg -= DamageReduction;
+            if (dmg < 1)
+                dmg = 1;
+
             Health -= dmg;
 
             if (Health <= 0)
@@ -163,11 +187,20 @@ namespace LD36Quill18
                     // failed to open door
                     return false;
                 }
+
+                if (this == Game.Instance.PlayerCharacter)
+                {
+                    Game.Instance.Message("You open a door.");
+                }
+                else
+                {
+                    Game.Instance.Message("A door opens.");
+                }
             }
 
             X = newX;
             Y = newY;
-            UpdateTile();
+            Tile = Floor.GetTile(X, Y);
             return true;
         }
 
@@ -178,7 +211,7 @@ namespace LD36Quill18
                 OnRangedAttack(this);
             }
 
-            Tile[] tiles = AimingOverlay.GeneratePath(X, Y, x, y);
+            Tile[] tiles = Map.GeneratePath(X, Y, x, y);
 
             // Hit the first thing we find.
 
@@ -192,7 +225,7 @@ namespace LD36Quill18
 
                 if (t.Character != null)
                 {
-                    int dmg = RangedDamageFunc();
+                    int dmg = RollDamage(RangedDamage);
                     if (this == Game.Instance.PlayerCharacter)
                     {
                         Game.Instance.Message(string.Format("You hit {0} for {1} damage!", t.Character.Name, dmg));
@@ -209,6 +242,11 @@ namespace LD36Quill18
 
         }
 
+        protected int RollDamage(int max)
+        {
+            return Game.Instance.Random.Next(max / 2, max + 1);
+        }
+
         protected virtual void MeleeAttack(Character target)
         {
             if (this.Faction == target.Faction)
@@ -222,7 +260,21 @@ namespace LD36Quill18
                 OnMeleeAttack(this, target);
             }
 
-            int dmg = MeleeDamageFunc();
+            int attackRoll = Game.Instance.Random.Next(1, 20) + ToHitBonus;
+
+            if (attackRoll < target.DodgeBonus + 10)
+            {
+                if (this == Game.Instance.PlayerCharacter)
+                {
+                    Game.Instance.Message(string.Format("You missed {0}.", target.Name));
+                }
+                else {
+                    Game.Instance.Message(string.Format("{0} tries to attack you, but misses.", this.Name));
+                }
+                return;
+            }
+
+            int dmg = RollDamage(MeleeDamage);
             target.TakeDamage( dmg );
 
             if (this == Game.Instance.PlayerCharacter)
@@ -233,17 +285,6 @@ namespace LD36Quill18
                 Game.Instance.Message(string.Format("{0} hits you for {1} damage!", this.Name, dmg));
             }
 
-        }
-
-        protected void UpdateTile()
-        {
-            if (this.Tile != null)
-            {
-                this.Tile.Character = null;
-            }
-
-            this.Tile = this.Floor.GetTile(X, Y);
-            this.Tile.Character = this;
         }
 
         bool OpenDoor(Tile tile)

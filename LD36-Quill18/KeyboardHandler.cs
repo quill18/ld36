@@ -107,12 +107,14 @@ namespace LD36Quill18
                 Game.Instance.InputMode = InputMode.Aiming;
                 Game.Instance.aimingOverlay = new AimingOverlay();
                 Game.Instance.aimingOverlay.Draw();
+                Game.Instance.Message("Aim Mode Started: Hit [ENTER] to fire.");
             }
             else if (cki.Key == ConsoleKey.L)
             {
                 Game.Instance.InputMode = InputMode.Looking;
                 Game.Instance.lookingOverlay = new LookingOverlay();
                 Game.Instance.lookingOverlay.Draw();
+                Game.Instance.Message("Look Mode Started: Hit [ENTER] to examine.");
             }
             else if (cki.Key == ConsoleKey.I)
             {
@@ -121,28 +123,78 @@ namespace LD36Quill18
             }
         }
 
+        public static bool inventoryExamineMode = false;
+        public static bool inventoryEquippedMode = false;
+
         static void Update_Keyboard_Inventory(ConsoleKeyInfo cki)
         {
             FrameBuffer.Instance.Clear();
-            switch (cki.Key)
+            if (cki.Key == ConsoleKey.Escape)
             {
-                case ConsoleKey.Escape:
-                    Game.Instance.InputMode = InputMode.Normal;
-                    RedrawRequests.FullRedraw();
-                    break;
-                default:
-                    // Try to map to an inventory item
-                    int i = (int)cki.KeyChar - 'a';
-                    if (i >= 0 && i < PlayerCharacter.Instance.Items.Length)
+                Game.Instance.InputMode = InputMode.Normal;
+                RedrawRequests.FullRedraw();
+            }
+            else if (cki.KeyChar == '/' || cki.KeyChar == '?')
+            {
+                inventoryExamineMode = !inventoryExamineMode;
+            }
+            else if (cki.Key == ConsoleKey.E)
+            {
+                inventoryEquippedMode = !inventoryEquippedMode;
+            }
+            else
+            {
+                // Try to map to an inventory item
+                int i = (int)cki.KeyChar - 'a';
+
+                if (i < 0 || (inventoryEquippedMode && i >= PlayerCharacter.Instance.EquippedItems.Length) ||
+                   (!inventoryEquippedMode && i >= PlayerCharacter.Instance.Items.Length))
+                {
+                    // Out of bounds for inventory.
+                    return;
+                }
+
+                if (inventoryExamineMode)
+                {
+                    if (inventoryEquippedMode)
+                    {
+                        if (PlayerCharacter.Instance.EquippedItems[i] != null)
+                        {
+                            Game.Instance.Message(PlayerCharacter.Instance.EquippedItems[i].FullDescription);
+                        }
+                    }
+                    else 
+                    {
+                        if (PlayerCharacter.Instance.Items[i] != null)
+                        {
+                            Game.Instance.Message(PlayerCharacter.Instance.Items[i].FullDescription);
+                        }
+                    }
+                }
+                else
+                {
+                    if (inventoryEquippedMode)
+                    {
+                        PlayerCharacter.Instance.Unequip(i);
+                    }
+                    else
                     {
                         PlayerCharacter.Instance.UseItem(i);
                     }
-                    i = (int)cki.KeyChar - 'A';
-                    if (i >= 0 && i < PlayerCharacter.Instance.Items.Length)
+                }
+
+                i = (int)cki.KeyChar - 'A';
+                if (i >= 0 && i < PlayerCharacter.Instance.Items.Length)
+                {
+                    if (inventoryExamineMode)
+                    {
+                        Game.Instance.Message(PlayerCharacter.Instance.Items[i].FullDescription);
+                    }
+                    else
                     {
                         PlayerCharacter.Instance.UseItem(i);
                     }
-                    break;
+                }
             }
         }
 
@@ -230,7 +282,7 @@ namespace LD36Quill18
                 }
                 if (tile.Item != null)
                 {
-                    Game.Instance.Message(tile.Item.Name + ": " + tile.Item.Description);
+                    Game.Instance.Message( tile.Item.FullDescription );
                 }
 
                 return;

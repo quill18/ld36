@@ -11,22 +11,83 @@ namespace LD36Quill18
 
             char c;
 
-            c = 's';
+            c = 'f';
             Monsters[c] = new MonsterCharacter();
-            Monsters[c].Name = "Sectoid";
-            Monsters[c].Description = "Completely different from that thing from that game.";
+            Monsters[c].Name = "Reptoid Footsoldier";
+            Monsters[c].Description = "";
             Monsters[c].Chixel = new Chixel(c, ConsoleColor.Green);
             Monsters[c].Health = Monsters[c].MaxHealth = 5;
-            Monsters[c].MeleeDamageFunc = () => { return Game.Instance.Random.Next(1, 5); };
+            Monsters[c].MeleeDamage = 4;
 
-            c = 'd';
+            c = 'm';
             Monsters[c] = new MonsterCharacter();
-            Monsters[c].Name = "Demon Dog";
-            Monsters[c].Description = "Dog says \"woof\".";
+            Monsters[c].Name = "Tuboid Moderator";
+            Monsters[c].Description = "";
+            Monsters[c].Chixel = new Chixel(c, ConsoleColor.Magenta);
+            Monsters[c].Health = Monsters[c].MaxHealth = 10;
+            Monsters[c].MeleeDamage = 6;
+
+
+            c = 'i';
+            Monsters[c] = new MonsterCharacter();       // TODO: NEEDS TO BE FAST
+            Monsters[c].Name = "Reptoid Infiltrator";
+            Monsters[c].Description = "";
+            Monsters[c].Chixel = new Chixel(c, ConsoleColor.Green);
+            Monsters[c].Health = Monsters[c].MaxHealth = 5;
+            Monsters[c].MeleeDamage = 4;
+
+
+            c = 't';
+            Monsters[c] = new MonsterCharacter();
+            Monsters[c].Name = "Behemoid Taskmaster";
+            Monsters[c].Description = "";
+            Monsters[c].Chixel = new Chixel(c, ConsoleColor.Red);
+            Monsters[c].Health = Monsters[c].MaxHealth = 20;
+            Monsters[c].MeleeDamage = 10;
+            Monsters[c].DamageReduction = 2;
+
+            // RANGED
+
+            c = 'a';
+            Monsters[c] = new MonsterCharacter();       // Runs away, fires at long range
+            Monsters[c].Name = "Reptoid Sniper";
+            Monsters[c].Description = "";
+            Monsters[c].Chixel = new Chixel(c, ConsoleColor.Red);
+            Monsters[c].Health = Monsters[c].MaxHealth = 5;
+            Monsters[c].MeleeDamage = 3;
+
+            c = 's';
+            Monsters[c] = new MonsterCharacter();           // Toss 1 spear at short range, then charge into melee.
+            Monsters[c].Name = "Behemoid Siegebreaker";
+            Monsters[c].Description = "";
+            Monsters[c].Chixel = new Chixel(c, ConsoleColor.Red);
+            Monsters[c].Health = Monsters[c].MaxHealth = 20;
+            Monsters[c].MeleeDamage = 10;
+
+
+            c = 'r';
+            Monsters[c] = new MonsterCharacter();       // Medium Range, doesn't run away
+            Monsters[c].Name = "Tuboid Reporter";
+            Monsters[c].Description = "";
             Monsters[c].Chixel = new Chixel(c, ConsoleColor.Red);
             Monsters[c].Health = Monsters[c].MaxHealth = 10;
-            Monsters[c].MeleeDamageFunc = () => { return Game.Instance.Random.Next(1, 11); };
+            Monsters[c].MeleeDamage = 5;
 
+
+
+            Dictionary<char, MonsterCharacter> BaseMonsters = new Dictionary<char, MonsterCharacter>(Monsters);
+            foreach (MonsterCharacter baseMonster in BaseMonsters.Values)
+            {
+                // Make an elite version in uppercase?
+                // Make sure no collision with items
+                char newC = baseMonster.Chixel.Glyph.ToString().ToUpper()[0];
+                MonsterCharacter newM = new MonsterCharacter(baseMonster);
+                newM.Name = "Elite " + newM.Name ;
+                Chixel ch = new Chixel(baseMonster.Chixel);
+                ch.Glyph = newC;
+                newM.Chixel = ch;
+                Monsters.Add(newC, newM);
+            }
 
 
         }

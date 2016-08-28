@@ -8,78 +8,29 @@ namespace LD36Quill18
             @"
            ##############################
            #                            #             ###############
-           #        0                   #             #             #
-           #   >@                $      ###############             #
-           #                            +             +             #
-           #         1           B      ###############             #
-           #                            #             #             #
-           #                            #             ###############
-           ##############################
-",
-
-
-            @"
-           ##############################
-           #                            #             ###############
-           #                    d       #             #             #
-           #   <                        ###############             #
-           #                     s      +             +       >     #
+           #               f            #             #             #
+           #   >                        ###############      1      #
+           #         a                  +             +      f      #
            #                            ###############             #
-           #                    d       #             #             #
-           #                            #             ###############
-           ##############################
+           #               f            #             #             #      #####
+           #                            #             #######+#######      # 0 #
+           ##############################                   # #            #   #         
+                                              ############### ###############+##                                      
+                                              #                                #                                       
+                                    ########### ############# ##################                                       
+                                    #&            &#        # #                                                        
+                                    ##            ##        # #                                                        
+                                    #&            @#        # #                                                        
+                                    ##            ##    ##### #############                                            
+                                    #&     C2     &#    #                 #                                            
+                                    ##            ##    #    π   π   π    #                                            
+                                    #&            &#    #                 #                                            
+                                    ##            ##    #                 #                                           
+                                    #&            &#    #                 #                                            
+                                    ################    ######++####++#####                                            
+                                                            XXXXXXXXXXXX    
 ",
 
-
-            @"
-           ##############################
-           #                            #             ###############
-           #                    d       #             #             #
-           #   <                        ###############             #
-           #                     s      +             +       >     #
-           #                            ###############             #
-           #                    d       #             #             #
-           #                            #             ###############
-           ##############################
-",
-
-            @"
-           ##############################
-           #                            #             ###############
-           #                    d       #             #             #
-           #   <                        ###############             #
-           #                     s      +             +       >     #
-           #                            ###############             #
-           #                    d       #             #             #
-           #                            #             ###############
-           ##############################
-",
-
-
-            @"
-           ##############################
-           #                            #             ###############
-           #                    d       #             #             #
-           #   <                        ###############             #
-           #                     s      +             +       >     #
-           #                            ###############             #
-           #                    d       #             #             #
-           #                            #             ###############
-           ##############################
-",
-
-
-            @"
-           ##############################
-           #                            #             ###############
-           #                    d       #             #             #
-           #   <                        ###############             #
-           #                     s      +             +       >     #
-           #                            ###############             #
-           #                    d       #             #             #
-           #                            #             ###############
-           ##############################
-",
 
         };
 
@@ -96,20 +47,21 @@ namespace LD36Quill18
             ItemSpawner[0, 0] = (tile) =>
             {
                 Item item = new Item();
-                item.Name = "Punchy Punch";
-                item.Description = "A punchier punch that does 4-8 damage.";
+                item.Name = "Bucket";
+                item.Description = "Much-needed protection for your cranial CPU, but impairs sensors. (+1 DR, -1 Vision)";
                 item.Chixel = new Chixel('A', ConsoleColor.Blue);
                 item.OnUse += (i) => { PlayerCharacter.Instance.Equip(i); };
-                item.EquipSlot = EquipSlot.Arm;
+                item.EquipSlot = EquipSlot.Head;
                 item.OnEquip += (i, c) =>
                 {
-                    c.MeleeDamageFunc = () => { return Game.Instance.Random.Next(4, 8); };
-                    c.EnergyPerMelee = 3;
+                    c.DamageReduction += 1;
+                    c.VisionRadius -= 1;
                 };
                 item.OnUnequip += (i, c) =>
                 {
-                    c.MeleeDamageFunc = PlayerCharacter.DefaultMeleeAttackDamage;
-                    c.EnergyPerMelee = PlayerCharacter.DefaultEnergyPerMelee;
+                    c.DamageReduction -= 1;
+                    c.VisionRadius += 1;
+
                 };
                 tile.Item = item;
 
@@ -118,23 +70,45 @@ namespace LD36Quill18
             ItemSpawner[0, 1] = (tile) =>
             {
                 Item item = new Item();
-                item.Name = "Choppy Chop";
+                item.Name = "Broken Girder";
+                item.Description = "Physics indicate that this would increase your kinetic strike potential. (+1 Melee Damage)";
                 item.Chixel = new Chixel('A', ConsoleColor.Green);
                 item.OnUse += (i) => { PlayerCharacter.Instance.Equip(i); };
                 item.EquipSlot = EquipSlot.Arm;
                 item.OnEquip += (i, c) =>
                 {
-                    c.MeleeDamageFunc = () => { return Game.Instance.Random.Next(40, 80); };
-                    c.EnergyPerMelee = 99999;
+                    c.MeleeDamage += 1;
                 };
                 item.OnUnequip += (i, c) =>
                 {
-                    c.MeleeDamageFunc = PlayerCharacter.DefaultMeleeAttackDamage;
-                    c.EnergyPerMelee = PlayerCharacter.DefaultEnergyPerMelee;
+                    c.MeleeDamage -= 1;
                 };
                 tile.Item = item;
 
             };
+
+            ItemSpawner[0, 2] = (tile) =>
+{
+    Item item = new Item();
+    item.Name = "Webcam";
+    item.Description = "An older-model 80k resolution Webcam. +1 Vision Radius";
+    item.Chixel = new Chixel(']', ConsoleColor.Blue);
+    item.OnUse += (i) => { PlayerCharacter.Instance.Equip(i); };
+    item.EquipSlot = EquipSlot.Head;
+    item.OnEquip += (i, c) =>
+    {
+        c.VisionRadius += 1;
+        c.UpdateVision();
+    };
+    item.OnUnequip += (i, c) =>
+    {
+        c.VisionRadius -= 1;
+        c.UpdateVision();
+    };
+    tile.Item = item;
+
+};
+
 
 
 

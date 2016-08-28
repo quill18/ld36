@@ -17,12 +17,14 @@ namespace LD36Quill18
 
         public void Draw()
         {
+            int viewOffsetX = Game.Instance.Map.CurrentFloor.ViewOffsetX;
+            int viewOffsetY = Game.Instance.Map.CurrentFloor.ViewOffsetY;
 
             // Draw the reticle
-            FrameBuffer.Instance.SetChixel(X - 1, Y, '(');
-            FrameBuffer.Instance.SetChixel(X + 1, Y, ')');
+            FrameBuffer.Instance.SetChixel(X - 1+viewOffsetX, Y+viewOffsetY, '(');
+            FrameBuffer.Instance.SetChixel(X + 1+viewOffsetX, Y+viewOffsetY, ')');
 
-            Rect r = new Rect(X-1, Y, 3, 1);
+            Rect r = new Rect(X-1+viewOffsetX, Y+viewOffsetY, 3, 1);
 
             RedrawRequests.Rects.Add(r);
         }

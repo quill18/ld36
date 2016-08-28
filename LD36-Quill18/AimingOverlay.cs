@@ -20,9 +20,12 @@ namespace LD36Quill18
             // Draw the path
             DrawPath();
 
+            int viewOffsetX = Game.Instance.Map.CurrentFloor.ViewOffsetX;
+            int viewOffsetY = Game.Instance.Map.CurrentFloor.ViewOffsetY;
+
             // Draw the reticle
-            FrameBuffer.Instance.SetChixel(X - 1, Y, '[');
-            FrameBuffer.Instance.SetChixel(X + 1, Y, ']');
+            FrameBuffer.Instance.SetChixel(X - 1 + viewOffsetX, Y + viewOffsetY, '[');
+            FrameBuffer.Instance.SetChixel(X + 1 + viewOffsetX, Y + viewOffsetY, ']');
 
             int leftMost = PlayerCharacter.Instance.X < X - 1 ?
                         PlayerCharacter.Instance.X : X - 1;
@@ -35,66 +38,9 @@ namespace LD36Quill18
 
 
 
-            Rect r = new Rect(leftMost, topMost, rightMost - leftMost + 1, bottomMost - topMost + 1);
+            Rect r = new Rect(leftMost + viewOffsetX, topMost + viewOffsetY, rightMost - leftMost + 1, bottomMost - topMost + 1);
 
             RedrawRequests.Rects.Add(r);
-        }
-
-        public static Tile[] GeneratePath(int x0, int y0, int x1, int y1)
-        {
-            // https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
-
-            int xDir = x1 > x0 ? 1 : -1;
-            int yDir = y1 > y0 ? 1 : -1;
-
-            double deltaX = x1 - x0;
-            double deltaY = y1 - y0;
-
-            int y = y0;
-
-            List<Tile> tiles = new List<Tile>();
-
-            if (deltaX == 0)
-            {
-                if (y == y1)
-                    return tiles.ToArray();
-
-                y += yDir;
-
-                // Just draw vertical line
-                while (y != y1+yDir)
-                {
-                    tiles.Add( Game.Instance.Map.CurrentFloor.GetTile(x0, y) );
-
-                    y += yDir;
-                }
-                return tiles.ToArray();
-            }
-
-            double error = -1.0;
-            double deltaerr = Math.Abs(deltaY / deltaX);
-
-            for (int x = x0+xDir; (xDir > 0) ? (x <= x1) : (x >= x1); x += xDir)
-            {
-                //FrameBuffer.Instance.SetChixel(x, y, '-', ConsoleColor.Yellow);
-                tiles.Add(Game.Instance.Map.CurrentFloor.GetTile(x, y));
-
-                error = error + deltaerr;
-                while (error > -0.5)
-                {
-                    y += yDir;
-                    //FrameBuffer.Instance.SetChixel(x, y, '|', ConsoleColor.Yellow);
-                    tiles.Add(Game.Instance.Map.CurrentFloor.GetTile(x, y));
-                    error = error - 1.0;
-                }
-            }
-
-            // Add the final tile
-            //tiles.Add(Game.Instance.Map.CurrentFloor.GetTile(x1, y1));
-
-            return tiles.ToArray();
-
-
         }
 
         void DrawPath()
@@ -108,8 +54,12 @@ namespace LD36Quill18
                 X = Game.Instance.Map.CurrentFloor.Width - 1;
             if (Y >= Game.Instance.Map.CurrentFloor.Height)
                 Y = Game.Instance.Map.CurrentFloor.Height - 1;
-            
-            Tile[] tiles = GeneratePath(PlayerCharacter.Instance.X, PlayerCharacter.Instance.Y, X, Y);
+
+            int viewOffsetX = Game.Instance.Map.CurrentFloor.ViewOffsetX;
+            int viewOffsetY = Game.Instance.Map.CurrentFloor.ViewOffsetY;
+
+
+            Tile[] tiles = Map.GeneratePath(PlayerCharacter.Instance.X, PlayerCharacter.Instance.Y, X, Y);
             if (tiles.Length == 0)
             {
                 return;
@@ -117,7 +67,7 @@ namespace LD36Quill18
 
             for (int i = 0; i < tiles.Length-1; i++)
             {
-                FrameBuffer.Instance.SetChixel(tiles[i].X, tiles[i].Y, '-', ConsoleColor.Yellow);
+                FrameBuffer.Instance.SetChixel(tiles[i].X+viewOffsetX, tiles[i].Y+viewOffsetY, '-', ConsoleColor.Yellow);
             }
 
 

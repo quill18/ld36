@@ -20,11 +20,13 @@ namespace LD36Quill18
             messageLog = new List<string>();
 
             frameBuffer = new FrameBuffer(0, 0, Console.WindowWidth, Console.WindowHeight);
+            LevelRenderArea = new Rect(0, 0, 80 - statAreaWidth, 24 - 3);
             //frameBufferStats = new FrameBuffer(Console.WindowWidth - statAreaWidth, 0, statAreaWidth, Console.WindowHeight);
 
             Map = new Map();
 
-            Map.CurrentFloor.RedrawFullMap();
+            PlayerCharacter.UpdateVision();
+            Map.CurrentFloor.Recenter(true);
         }
 
         public Map Map { get; protected set; }
@@ -57,6 +59,8 @@ namespace LD36Quill18
 
         private int statAreaWidth = 16;
 
+        public Rect LevelRenderArea;
+           
         private FrameBuffer frameBuffer;
         //private FrameBuffer frameBufferStats;
 
@@ -126,7 +130,10 @@ namespace LD36Quill18
 
         public void Message(string m)
         {
-            messageLog.Add(m);
+            string[] ms = m.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries );
+
+            foreach( string m2 in ms)
+                messageLog.Add(m2);
         }
 
         public void DebugMessage(string m)
@@ -191,6 +198,7 @@ namespace LD36Quill18
 
         void PrintLookingInfo(Tile tile)
         {
+            
             int x = FrameBuffer.Instance.Width - statAreaWidth - 1;
             int y = 8;
             frameBuffer.Write(x, y, "\u255F");
@@ -203,24 +211,34 @@ namespace LD36Quill18
             y++;
             y++;
 
-            frameBuffer.Write(x + 2, y, tile.TileType.ToString());
-
-            y++;
-
-            if (tile.Character != null)
+            if (tile.WasSeen == true)
             {
-                frameBuffer.Write(x + 2, y, tile.Character.Name);
+                frameBuffer.Write(x + 2, y, tile.TileType.ToString());
+
+                y++;
+
+                if (tile.Character != null)
+                {
+                    frameBuffer.Write(x + 2, y, tile.Character.Name);
+                }
+
+                y++;
+
+                if (tile.Item != null)
+                {
+                    frameBuffer.Write(x + 2, y, tile.Item.Name);
+                }
+
+                y++;
+                y++;
             }
-
-            y++;
-
-            if (tile.Item != null)
-            {
-                frameBuffer.Write(x + 2, y, tile.Item.Name);
+            else {
+                y++;
+                y++;
+                frameBuffer.Write(x + 2, y,"No Sensor\nCovereage");
+                y++;
+                y++;
             }
-
-            y++;
-            y++;
 
             frameBuffer.Write(x, y, "\u255F");
             for (int i = 1; i < statAreaWidth; i++)
@@ -250,21 +268,51 @@ namespace LD36Quill18
         void DrawInventoryScreen()
         {
             FrameBuffer.Instance.Write(30, 0, "Inventory");
-
-            for (int i = 0; i < PlayerCharacter.Instance.Items.Length; i++)
+            if (KeyboardHandler.inventoryExamineMode)
             {
-                bool col1 = i < PlayerCharacter.Instance.Items.Length / 2;
-                int x = col1 ? 5 : 35;
-                int y = col1 ? i : i - PlayerCharacter.Instance.Items.Length / 2;
-                y += 5;
+                FrameBuffer.Instance.Write(20, 1, "Hit [?] to Stop Examining");
+                FrameBuffer.Instance.Write(20, 2, "Hit [E] to See Equiped");
+            }
+            else
+            {
+                FrameBuffer.Instance.Write(20, 1, "Hit [?] to Examine Items");
+                FrameBuffer.Instance.Write(20, 2, "Hit [E] to See Inventory");
+            }
 
-                string name = "";
-                if (PlayerCharacter.Instance.Items[i] != null)
-                    name = PlayerCharacter.Instance.Items[i].Name;
+            if (KeyboardHandler.inventoryEquippedMode)
+            {
+                for (int i = 0; i < PlayerCharacter.EquippedItems.Length; i++)
+                {
+                    int x = 5;
+                    int y = i;
+                    y += 5;
 
-                char c = (char)((int)'a' + i);
+                    string name = "";
+                    if (PlayerCharacter.Instance.EquippedItems[i] != null)
+                        name = PlayerCharacter.Instance.EquippedItems[i].Name;
 
-                FrameBuffer.Instance.Write(x, y, string.Format("[{0}] {1}", c, name));
+                    char c = (char)((int)'a' + i);
+
+                    FrameBuffer.Instance.Write(x, y, string.Format("[{0}] {1}", c, name));
+                }
+            }
+            else
+            {
+                for (int i = 0; i < PlayerCharacter.Instance.Items.Length; i++)
+                {
+                    bool col1 = i < PlayerCharacter.Instance.Items.Length / 2;
+                    int x = col1 ? 5 : 35;
+                    int y = col1 ? i : i - PlayerCharacter.Instance.Items.Length / 2;
+                    y += 5;
+
+                    string name = "";
+                    if (PlayerCharacter.Instance.Items[i] != null)
+                        name = PlayerCharacter.Instance.Items[i].Name;
+
+                    char c = (char)((int)'a' + i);
+
+                    FrameBuffer.Instance.Write(x, y, string.Format("[{0}] {1}", c, name));
+                }
             }
         }
     }

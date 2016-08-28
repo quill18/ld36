@@ -2,11 +2,11 @@
 
 namespace LD36Quill18
 {
-    public enum TileType { FLOOR, WALL, DOOR_CLOSED, DOOR_OPENED, UPSTAIR, DOWNSTAIR }
+    public enum TileType { FLOOR, WALL, DOOR_CLOSED, DOOR_OPENED, UPSTAIR, DOWNSTAIR, DEBRIS }
 
     public class Tile
     {
-        const string TILE_GLYPHS = @" #+-<>";
+        const string TILE_GLYPHS = @" #+-<>X";
 
         public Tile(int x, int y, Floor floor, char textChar)
         {
@@ -21,6 +21,10 @@ namespace LD36Quill18
                     break;
                 case '#':
                     TileType = TileType.WALL;
+                    break;
+                case 'X':
+                    TileType = TileType.DEBRIS;
+                    Chixel.ForegroundColor = ConsoleColor.Gray;
                     break;
                 case '+':
                     TileType = TileType.DOOR_CLOSED;
@@ -63,7 +67,8 @@ namespace LD36Quill18
                     else if (MonsterList.Monsters.ContainsKey(textChar))
                     {
                         // Yup, it's a monster.
-                        MonsterCharacter mc = new MonsterCharacter(MonsterList.Monsters[textChar], this, Floor);
+                        MonsterCharacter mc = new MonsterCharacter(MonsterList.Monsters[textChar]);
+                        mc.Tile = this;
                         return;
                     }
                     else if (ItemList.Items.ContainsKey(textChar))
@@ -73,8 +78,17 @@ namespace LD36Quill18
                         return;
                     }
 
-                    throw new Exception("No character entry for: " + textChar);
+                    //throw new Exception("No character entry for: " + textChar);
+                    Game.Instance.DebugMessage("No character entry for: " + textChar);
 
+                    Item item = new Item();
+                    item.Name = "Furniture";
+                    item.Chixel = new Chixel(textChar, ConsoleColor.Gray);
+                    item.Static = true;
+                    this.Item = item;
+
+
+                    break;
             }
 
         }
@@ -97,24 +111,37 @@ namespace LD36Quill18
         public Chixel Chixel { get; protected set; }
         public Character Character { get; set; }
         public Item Item { get; set; }
+        public bool WasSeen { get; set; }
 
         private TileType _TileType;
 
         public bool IsWalkable()
         {
-            return TileType != TileType.WALL;
+            return TileType != TileType.WALL && TileType != TileType.DEBRIS;
         }
 
-        public void Draw()
+        public bool IsLookable()
         {
-            if (Item != null)
+            return TileType != TileType.WALL && TileType != TileType.DEBRIS && TileType != TileType.DOOR_CLOSED;
+        }
+
+
+        public void Draw(int viewOffsetX, int viewOffsetY)
+        {
+            if (WasSeen == false)
             {
-                // Draw item
-                Item.Draw(X, Y);
+                FrameBuffer.Instance.SetChixel(X + viewOffsetX, Y + viewOffsetY, '\u2591');
                 return;
             }
 
-            FrameBuffer.Instance.SetChixel(X, Y, Chixel);
+            if (Item != null)
+            {
+                // Draw item
+                Item.Draw(X+viewOffsetX, Y+viewOffsetY);
+                return;
+            }
+
+            FrameBuffer.Instance.SetChixel(X+viewOffsetX, Y+viewOffsetY, Chixel);
         }
     }
 }

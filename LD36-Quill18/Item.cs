@@ -22,6 +22,7 @@ namespace LD36Quill18
             this.OnEquip = other.OnEquip;
             this.OnUnequip = other.OnUnequip;
             this.Description = other.Description;
+            this.Static = other.Static;
         }
 
         public Chixel Chixel { get; set; }
@@ -32,6 +33,21 @@ namespace LD36Quill18
         public int UsesLeft { get; set; }
         public EquipSlot EquipSlot { get; set; }
         public string Description { get; set; }
+        public bool Static { get; set; }
+
+        public string FullDescription { 
+            get
+            {
+                string s = Name + ": ";
+                if (OnEquip != null)
+                {
+                    s += "- Equippable: " + EquipSlot.ToString() + "\n";
+                }
+                s += Description;
+                return s;
+            }
+        }
+
 
         public event Action<Item, PlayerCharacter> OnEquip;
         public event Action<Item, PlayerCharacter> OnUnequip;

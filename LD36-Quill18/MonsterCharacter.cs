@@ -9,14 +9,9 @@ namespace LD36Quill18
             Faction = Faction.Enemy;
         }
 
-        public MonsterCharacter(MonsterCharacter other, Tile tile, Floor floor) : base(other)
+        public MonsterCharacter(MonsterCharacter other) : base(other)
         {
             this.Name = other.Name;
-            this.Floor = floor;
-            this.X = tile.X;
-            this.Y = tile.Y;
-            this.Tile = tile;
-            tile.Character = this;
         }
 
         public MonsterCharacter(Tile tile, Floor floor, Chixel chixel) : base(tile, floor, chixel)
@@ -24,6 +19,24 @@ namespace LD36Quill18
             throw new Exception();
         }
 
+        bool spottedPlayer = false;
+        int targetX;
+        int targetY;
+
+        bool CanSeePlayer()
+        {
+            PlayerCharacter pc = Game.Instance.PlayerCharacter;
+            Tile[] los = Map.GeneratePath(X, Y, pc.X, pc.Y);
+            foreach (Tile t in los)
+            {
+                if (t.IsLookable() == false)
+                {
+                    // We can't see the player.
+                    return false;
+                }
+            }
+            return true;
+        }
 
         public override void Update()
         {
@@ -36,22 +49,34 @@ namespace LD36Quill18
                 return;
             }
 
+
+            if (CanSeePlayer())
+            {
+                spottedPlayer = true;
+                targetX = pc.X;
+                targetY = pc.Y;
+            }
+            else if (spottedPlayer == false)
+            {
+                return;
+            }
+
             int dX = 0;
             int dY = 0;
 
-            if (pc.X < this.X)
+            if (targetX < this.X)
             {
                 dX = -1;
             }
-            if (pc.Y < this.Y)
+            if (targetY < this.Y)
             {
                 dY = -1;
             }
-            if (pc.X > this.X)
+            if (targetX > this.X)
             {
                 dX = 1;
             }
-            if (pc.Y > this.Y)
+            if (targetY > this.Y)
             {
                 dY = 1;
             }
