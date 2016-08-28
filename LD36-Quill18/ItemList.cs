@@ -49,6 +49,14 @@ namespace LD36Quill18
             Items[c].Chixel = new Chixel(c, ConsoleColor.Gray);
             Items[c].Static = true;
 
+            c = 'Y';
+            Items[c] = new Item();
+            Items[c].Name = "Yendorian Power Cell";
+            Items[c].Description = "Contains the power of a black hole.";
+            Items[c].Chixel = new Chixel(c, ConsoleColor.DarkYellow);
+            Items[c].OnPickup += OnPickup_Yendor;
+
+
 
 
 
@@ -61,19 +69,27 @@ namespace LD36Quill18
             //frameBuffer.Write(x, y, string.Format("Energy: 0.{0}%", PlayerCharacter.Energy.ToString("d4")));
 
             PlayerCharacter.Instance.Energy += amt;
-            Game.Instance.Message(string.Format("You gained 0.{0}% energy. Current max capacity: 0.{1}% ",
+            Game.Instance.Message( Utility.WordWrap( string.Format("You gained 0.{0}% energy.\nCurrent Energy: 0.{1}% (Max Capacity: 0.{2}%) ",
                                                 amt.ToString("d4"),
+                                                PlayerCharacter.Instance.Energy.ToString("d4"),
                                                 PlayerCharacter.Instance.MaxEnergy.ToString("d4")
-                                               ));
+                                                                  )));
         }
 
         public static void OnUse_Heal(Item item, int amt)
         {
             PlayerCharacter.Instance.Health += amt;
-            Game.Instance.Message(string.Format("You repair {0} HPs. Current max HPs: {1}", 
+            Game.Instance.Message(string.Format("You repair {0} HPs. Current HPs: {1}/{2}", 
                                                 amt, 
+                                                PlayerCharacter.Instance.Health,
                                                 PlayerCharacter.Instance.MaxHealth));
 
+
+        }
+
+        public static void OnPickup_Yendor(Item item)
+        {
+            Game.Instance.Victory();
 
         }
 

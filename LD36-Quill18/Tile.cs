@@ -6,7 +6,7 @@ namespace LD36Quill18
 
     public class Tile
     {
-        const string TILE_GLYPHS = @" #+-<>X+";
+        const string TILE_GLYPHS = @" #+-<>x+";
 
         public Tile(int x, int y, Floor floor, char textChar)
         {
@@ -24,6 +24,7 @@ namespace LD36Quill18
                 case '#':
                     TileType = TileType.WALL;
                     break;
+                case 'x':
                 case 'X':
                     TileType = TileType.DEBRIS;
                     Chixel.ForegroundColor = ConsoleColor.Gray;
@@ -54,7 +55,7 @@ namespace LD36Quill18
                     {
                         throw new Exception("Already have a player character!");
                     }
-                    Game.Instance.PlayerCharacter = new PlayerCharacter( this, this.Floor, new Chixel('@') );
+                    Game.Instance.PlayerCharacter = new PlayerCharacter( this, this.Floor, new Chixel('@', ConsoleColor.DarkYellow) );
                     break;
                 case '»':
                 case '«':

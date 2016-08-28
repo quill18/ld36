@@ -31,7 +31,7 @@ namespace LD36Quill18
         public string Name { get; set; }
         public int Value = 0;   // Replaces IsMoney
         public bool IsKey = false;
-        public event Action OnPickup;
+        public event Action<Item> OnPickup;
         public event Action<Item> OnUse;
         public int UsesLeft { get; set; }
         public EquipSlot EquipSlot { get; set; }
@@ -42,12 +42,16 @@ namespace LD36Quill18
         public string FullDescription { 
             get
             {
-                string s = Name + ": ";
+                string s = Name;
                 if (OnEquip != null)
                 {
                     s += "- Equippable: " + EquipSlot.ToString() + "\n";
                 }
-                s += Utility.WordWrap(Description);
+                else
+                {
+                    s += ": ";
+                }
+                s += Description;
                 return s;
             }
         }
@@ -59,6 +63,12 @@ namespace LD36Quill18
         public void Draw(int x, int y)
         {
             FrameBuffer.Instance.SetChixel(x, y, Chixel);
+        }
+
+        public void Pickup()
+        {
+            if (OnPickup != null)
+                OnPickup(this);
         }
 
         public void Use()

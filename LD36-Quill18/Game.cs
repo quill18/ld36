@@ -333,16 +333,15 @@ namespace LD36Quill18
             if (KeyboardHandler.inventoryExamineMode)
             {
                 FrameBuffer.Instance.Write(20, 1, "Hit [?] to Stop Examining");
-                FrameBuffer.Instance.Write(20, 2, "Hit [TAB] to See Equiped");
             }
             else
             {
                 FrameBuffer.Instance.Write(20, 1, "Hit [?] to Examine Items");
-                FrameBuffer.Instance.Write(20, 2, "Hit [TAB] to See Inventory");
             }
 
             if (KeyboardHandler.inventoryEquippedMode)
             {
+                FrameBuffer.Instance.Write(20, 2, "Hit [TAB] to See Inventory");
                 for (int i = 0; i < PlayerCharacter.EquippedItems.Length; i++)
                 {
                     int x = 5;
@@ -360,6 +359,7 @@ namespace LD36Quill18
             }
             else
             {
+                FrameBuffer.Instance.Write(20, 2, "Hit [TAB] to See Equiped");
                 for (int i = 0; i < PlayerCharacter.Instance.Items.Length; i++)
                 {
                     bool col1 = i < PlayerCharacter.Instance.Items.Length / 2;
@@ -383,6 +383,29 @@ namespace LD36Quill18
             Restart = true;
         }
 
+        public void Victory()
+        {
+            VictoryScreen vs = new VictoryScreen();
+
+            Console.WriteLine("");
+            Console.WriteLine("");
+
+            while (true)
+            {
+                Console.WriteLine("Abort, Retry, Ignore?");
+                string s = Console.ReadLine();
+                if (s.ToLower() == "abort" || s.ToLower() == "a")
+                {
+                    ExitGame();
+                    return;
+                }
+                if (s.ToLower() == "retry" || s.ToLower() == "r")
+                {
+                    RestartGame();
+                    return;
+                }
+            }
+        }
 
         public void BSOD()
         {

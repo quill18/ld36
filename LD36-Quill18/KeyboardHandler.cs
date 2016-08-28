@@ -29,13 +29,19 @@ namespace LD36Quill18
                 {
                     PlayerCharacter.Instance.Money += 999999;
                 }
-                if (cheatsEnabled && ((cki.Modifiers & ConsoleModifiers.Control) != 0) && cki.Key == ConsoleKey.V)
-                {
-                    PlayerCharacter.Instance.VisionRadius += 99;
-                }
                 if (cheatsEnabled && ((cki.Modifiers & ConsoleModifiers.Control) != 0) && cki.Key == ConsoleKey.H)
                 {
                     PlayerCharacter.Instance.Health = PlayerCharacter.Instance.MaxHealth = 999999;
+                    PlayerCharacter.Instance.VisionRadius = 99;
+                }
+                if (cheatsEnabled && ((cki.Modifiers & ConsoleModifiers.Control) != 0) && cki.Key == ConsoleKey.OemPeriod)
+                {
+                   PlayerCharacter.Instance.ChangeFloor(PlayerCharacter.Instance.Floor.FloorIndex + 1);
+
+                }
+                if (cheatsEnabled && ((cki.Modifiers & ConsoleModifiers.Control) != 0) && cki.Key == ConsoleKey.OemComma)
+                {
+                    PlayerCharacter.Instance.ChangeFloor(PlayerCharacter.Instance.Floor.FloorIndex - 1);
                 }
                 else
                 {
@@ -303,7 +309,7 @@ namespace LD36Quill18
                 }
                 if (tile.Item != null)
                 {
-                    Game.Instance.Message( tile.Item.FullDescription );
+                    Game.Instance.Message( Utility.WordWrap(tile.Item.FullDescription) );
                 }
 
                 return;

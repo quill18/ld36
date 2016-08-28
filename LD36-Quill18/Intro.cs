@@ -131,7 +131,7 @@ namespace LD36Quill18
                     case 98:
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.Write(Environment.NewLine);
-                        Console.WriteLine("Quantum Power Cell: 0.027% Charged");
+                        Console.WriteLine("Primary Power Cell: 0.027% Charged");
                         Console.ForegroundColor = ConsoleColor.Yellow;
                         DoSleep(longPause);
                         Console.WriteLine("Disabling non-essential functions.");
@@ -269,7 +269,7 @@ namespace LD36Quill18
 
             Console.WriteLine("");
             DoSleep(shortPause);
-            Console.WriteLine("SECONDARY OBJECTIVE: Acquire Active Quantum Power Cell from Sub-Level 18");
+            Console.WriteLine("SECONDARY OBJECTIVE: Acquire Active Yendorian Power Cell from Sub-Level 18");
             Console.Beep();
             DoSleep(shortPause);
             Console.WriteLine("   ANALYSIS: Heavy opposition by invasion force expected.");

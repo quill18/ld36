@@ -53,7 +53,7 @@ namespace LD36Quill18
                 //FrameBuffer.Instance.SetChixel(x, y, '-', ConsoleColor.Yellow);
 
                 error = error + deltaerr;
-                if (error < -0.5)
+                if (error <= -0.5)
                 {
                     tiles.Add(Game.Instance.Map.CurrentFloor.GetTile(x, y));
                 }
@@ -172,6 +172,24 @@ namespace LD36Quill18
 			if (s == null)
 				return "";
 			
+            string[] lines = s.Split('\n');
+
+            StringBuilder newSentence = new StringBuilder();
+
+
+            foreach (string line in lines)
+            {
+                newSentence.AppendLine(WordWrap_Line(line, width));
+            }
+
+            return newSentence.ToString();
+        }
+
+        static string WordWrap_Line(string s, int width)
+        {
+            if (s == null)
+                return "";
+
             string[] words = s.Split(' ');
 
             StringBuilder newSentence = new StringBuilder();

@@ -25,7 +25,7 @@ namespace LD36Quill18
             Game game = new Game();
 
             Intro intro = new Intro();
-            intro.Play();
+            //intro.Play();
 
             while (game.Update())
             {

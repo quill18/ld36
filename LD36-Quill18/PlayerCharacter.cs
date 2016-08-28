@@ -41,6 +41,9 @@ namespace LD36Quill18
             OnRangedAttack += DefaultOnRangedAttack;
             OnMeleeAttack += DefaultOnMeleeAttack;
 
+            ToHitBonus = 1;
+            DodgeBonus = 1;
+
             EquippedItems = new Item[ Enum.GetValues(typeof(EquipSlot)).Length ];
 
         }
@@ -257,6 +260,7 @@ namespace LD36Quill18
                 if (Items[i] == null)
                 {
                     Items[i] = item;
+                    item.Pickup();
                     Game.Instance.Message(string.Format("Picked up: [{0}] {1}", (char)((int)'a' + i), item.Name));
                     return;
                 }
@@ -356,7 +360,7 @@ namespace LD36Quill18
             ChangeFloor(this.Floor.FloorIndex + 1);
         }
 
-        void ChangeFloor(int floorNum)
+        public void ChangeFloor(int floorNum)
         {
             bool goingDown = floorNum > Game.Instance.Map.CurrentFloorIndex;
 
