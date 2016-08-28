@@ -7,10 +7,14 @@ namespace LD36Quill18
     {
         public static void Main(string[] args)
         {
+			Console.ForegroundColor = ConsoleColor.White;
+			Console.BackgroundColor = ConsoleColor.Black;
             while (RunGame())
             {
                 
             }
+
+			Console.ResetColor();
         }
 
         static bool RunGame()

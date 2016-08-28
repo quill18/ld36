@@ -167,8 +167,11 @@ namespace LD36Quill18
             return '-';
         }
 
-        static public string WordWrap(string s, int width=60)
+        static public string WordWrap(string s, int width=50)
         {
+			if (s == null)
+				return "";
+			
             string[] words = s.Split(' ');
 
             StringBuilder newSentence = new StringBuilder();

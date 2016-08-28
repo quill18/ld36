@@ -100,12 +100,12 @@ namespace LD36Quill18
                 // Do nothing
                 Game.Instance.DoTick();
             }
-            else if (cki.Key == ConsoleKey.OemPeriod)
+			else if (cki.Key == ConsoleKey.OemPeriod || cki.KeyChar=='.' || cki.KeyChar=='>')
             {
                 PlayerCharacter.Instance.GoDown();
                 Game.Instance.DoTick();
             }
-            else if (cki.Key == ConsoleKey.OemComma)
+			else if (cki.Key == ConsoleKey.OemComma || cki.KeyChar == ',' || cki.KeyChar == '<')
             {
                 PlayerCharacter.Instance.GoUp();
                 Game.Instance.DoTick();

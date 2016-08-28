@@ -13,21 +13,23 @@ namespace LD36Quill18
 
             c = '%';
             Items[c] = new Item();
-            Items[c].Name = "Battery (9v)";
-            Items[c].Chixel = new Chixel(c, ConsoleColor.Green);
+			Items[c].Name = "Battery (9v)";
+			Items[c].Description = "Enough for a few more steps.";
+			Items[c].Chixel = new Chixel(c, ConsoleColor.Green);
             Items[c].OnUse += (item) => { OnUse_ChangeEnergy(item, 250); };
             Items[c].UsesLeft = 1;
 
             c = '$';
             Items[c] = new Item();
             Items[c].Name = "Metal Scraps";
-            Items[c].IsMoney = true;
+			Items[c].Description = "Useless by itself, but can be used to provide raw matter to a 3D Fabricator.";
+			Items[c].IsMoney = true;
             Items[c].Chixel = new Chixel(c, ConsoleColor.Red);
 
             c = '&';
             Items[c] = new Item();
             Items[c].Name = "Unpowered Warbot";
-            Items[c].Description = "Power cells are completely depleted.";
+            Items[c].Description = "This unit's power cells are completely depleted.";
             Items[c].Chixel = new Chixel(c, ConsoleColor.Red);
             Items[c].Static = true;
 

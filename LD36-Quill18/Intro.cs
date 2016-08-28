@@ -142,17 +142,21 @@ namespace LD36Quill18
                         Console.BackgroundColor = ConsoleColor.DarkRed;
                         Console.ForegroundColor = ConsoleColor.White;
                         Console.WriteLine("PRIORITY ALPHA");
-                        Console.ResetColor();
+                        ResetColor();
                         break;
                 }
                 Console.CursorLeft = 0;
-                Console.ForegroundColor = ConsoleColor.White;
+				ResetColor();
                 Console.Write("{0}% Complete", i);
                 DoSleep(10);
             }
-
-
         }
+
+		void ResetColor()
+		{
+			Console.BackgroundColor = ConsoleColor.Black;
+			Console.ForegroundColor = ConsoleColor.White;
+		}
 
         void CatchUpOnNews()
         {
@@ -240,12 +244,12 @@ namespace LD36Quill18
             Console.BackgroundColor = ConsoleColor.DarkRed;
             Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine("1.6e-35%");
-            Console.ResetColor();
+            ResetColor();
             DoSleep(shortPause);
             Console.Write("   CURRENT STATUS: ");
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("On Hold");
-            Console.ResetColor();
+            ResetColor();
 
             DoSleep(longPause);
 
@@ -259,7 +263,7 @@ namespace LD36Quill18
             Console.Write("   CURRENT STATUS: ");
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("On Hold");
-            Console.ResetColor();
+            ResetColor();
 
             DoSleep(longPause);
 
@@ -273,7 +277,7 @@ namespace LD36Quill18
             Console.Write("   CURRENT STATUS: ");
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("Active");
-            Console.ResetColor();
+            ResetColor();
 
             DoSleep(longPause);
 
@@ -287,7 +291,7 @@ namespace LD36Quill18
             Console.Write("   CURRENT STATUS: ");
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("Active");
-            Console.ResetColor();
+            ResetColor();
 
             DoSleep(longPause);
 

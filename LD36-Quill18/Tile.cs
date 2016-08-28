@@ -84,8 +84,9 @@ namespace LD36Quill18
                     Game.Instance.DebugMessage("No character entry for: " + textChar);
 
                     Item item = new Item();
-                    item.Name = "Furniture";
-                    item.Chixel = new Chixel(textChar, ConsoleColor.Gray);
+					item.Name = "Furniture";
+					item.Description = "There is a word from some dead, long forgotten language engraved on it.";
+					item.Chixel = new Chixel(textChar, ConsoleColor.Gray);
                     item.Static = true;
                     this.Item = item;
 
