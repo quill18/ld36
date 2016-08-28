@@ -212,7 +212,7 @@ namespace LD36Quill18
             else if (cki.Key == ConsoleKey.Enter)
             {
                 // Fire!
-                PlayerCharacter.Instance.FireTowards(aimingOverlay.X, aimingOverlay.Y);
+                PlayerCharacter.Instance.QueueFireAt(aimingOverlay.X, aimingOverlay.Y);
                 Game.Instance.InputMode = InputMode.Normal;
                 Game.Instance.aimingOverlay = null;
                 Game.Instance.DoTick();

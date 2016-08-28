@@ -53,7 +53,7 @@ namespace LD36Quill18
 
         public int ViewOffsetX { get; protected set; }
         public int ViewOffsetY { get; protected set; }
-        private int centerThresholdX = 30;
+        private int centerThresholdX = 24;
         private int centerThresholdY = 7;
 
         /// <summary>
@@ -134,7 +134,7 @@ namespace LD36Quill18
             RedrawCharacters();
         }
 
-        void RedrawCharacters()
+        public void RedrawCharacters()
         {
             // Draw characters
             foreach (Character ch in characters)
@@ -147,7 +147,7 @@ namespace LD36Quill18
             }
         }
 
-        void RedrawRequestedArea()
+        public void RedrawRequestedArea()
         {
             foreach (Rect r in RedrawRequests.Rects)
             {

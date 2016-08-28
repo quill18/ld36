@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 
 namespace LD36Quill18
 {
@@ -36,6 +37,8 @@ namespace LD36Quill18
 
             this.Floor.AddCharacter(this);
         }
+
+        public int Cooldown { get; set; }
 
         public int X { get; protected set; }
         public int Y { get; protected set; }
@@ -120,8 +123,8 @@ namespace LD36Quill18
         /// </summary>
         virtual public void Update()
         {
-            // Base character doesn't have anything to do 
-            // unless we have poison mechanics or something.
+            if (Cooldown > 0)
+                Cooldown--;
         }
 
         public void TakeDamage(float dmg)
@@ -145,9 +148,9 @@ namespace LD36Quill18
             this.Floor.RemoveCharacter(this);
         }
 
-        public void MoveBy(int dX, int dY)
+        public bool MoveBy(int dX, int dY)
         {
-            MoveTo(X + dX, Y + dY);
+            return MoveTo(X + dX, Y + dY);
         }
 
         virtual public bool MoveTo(int newX, int newY)
@@ -204,6 +207,16 @@ namespace LD36Quill18
             return true;
         }
 
+        void DrawRangedAttack( Tile[] tiles )
+        {
+            Floor.RedrawRequestedArea();
+            Utility.DrawPath(tiles, true, ConsoleColor.Red);
+            Floor.RedrawCharacters();
+            FrameBuffer.Instance.DrawFrame();
+            //Thread.Sleep(1000);
+            Game.Instance.SleepFor = 500;
+        }
+
         virtual public void FireTowards(int x, int y)
         {
             if (OnRangedAttack != null)
@@ -211,9 +224,10 @@ namespace LD36Quill18
                 OnRangedAttack(this);
             }
 
-            Tile[] tiles = Map.GeneratePath(X, Y, x, y);
+            Tile[] tiles = Utility.GeneratePath(X, Y, x, y);
 
             // Hit the first thing we find.
+            DrawRangedAttack(tiles);
 
             foreach (Tile t in tiles)
             {
@@ -223,7 +237,13 @@ namespace LD36Quill18
                     return;
                 }
 
-                if (t.Character != null)
+                if (t.Character != null && t.Character.Faction == this.Faction)
+                {
+                    // No Damage, but still stop processing.
+                    return;
+                }
+
+                if (t.Character != null && t.Character.Faction != this.Faction)
                 {
                     int dmg = RollDamage(RangedDamage);
                     if (this == Game.Instance.PlayerCharacter)

@@ -75,6 +75,7 @@ namespace LD36Quill18
         static private PlayerCharacter _instance;
         private int target_dX;
         private int target_dY;
+        private bool queuedFireAt;
 
         public override void Die()
         {
@@ -88,11 +89,27 @@ namespace LD36Quill18
             target_dY = dY;
         }
 
+        public void QueueFireAt(int dX, int dY)
+        {
+            queuedFireAt = true;
+            target_dX = dX;
+            target_dY = dY;
+        }
+
+
         public override void Update()
         {
             base.Update();
 
-            MoveBy(target_dX, target_dY);
+            if (queuedFireAt)
+            {
+                queuedFireAt = false;
+                FireTowards(target_dX, target_dY);
+            }
+            else {
+                MoveBy(target_dX, target_dY);
+            }
+
             target_dX = target_dY = 0;
         }
 
@@ -127,7 +144,7 @@ namespace LD36Quill18
                 {
                     // Manhattan distance
                     //int d = Math.Abs(x) + Math.Abs(y);
-                    int d = (int)Math.Sqrt(x*x+y*y);
+                    int d = Utility.CircleDistance(0, 0, x, y);
                     if (d <= VisionRadius)
                     {
                         Tile t = Floor.GetTile(X + x, Y + y);
@@ -146,6 +163,8 @@ namespace LD36Quill18
         {
             // Pick it up!
             Tile.Item = null;
+
+            Console.Beep();
 
             if (item.IsMoney)
             {

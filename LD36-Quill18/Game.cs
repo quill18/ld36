@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace LD36Quill18
 {
@@ -68,6 +69,8 @@ namespace LD36Quill18
 
         private List<string> messageLog;
 
+        public int SleepFor { get; set; }
+
         /// <summary>
         /// Called non-stop by the main program loop
         /// </summary>
@@ -105,6 +108,12 @@ namespace LD36Quill18
             if(exit)
             {
                 return false;
+            }
+
+            if (SleepFor > 0)
+            {
+                Thread.Sleep(SleepFor);
+                SleepFor = 0;
             }
 
             return true;
@@ -198,7 +207,6 @@ namespace LD36Quill18
 
         void PrintLookingInfo(Tile tile)
         {
-            
             int x = FrameBuffer.Instance.Width - statAreaWidth - 1;
             int y = 8;
             frameBuffer.Write(x, y, "\u255F");
@@ -211,7 +219,7 @@ namespace LD36Quill18
             y++;
             y++;
 
-            if (tile.WasSeen == true)
+            if (tile != null && tile.WasSeen == true)
             {
                 frameBuffer.Write(x + 2, y, tile.TileType.ToString());
 

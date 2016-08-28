@@ -55,6 +55,10 @@ namespace LD36Quill18
             Monsters[c].Chixel = new Chixel(c, ConsoleColor.Red);
             Monsters[c].Health = Monsters[c].MaxHealth = 5;
             Monsters[c].MeleeDamage = 3;
+            Monsters[c].RangedDamage = 5;
+            Monsters[c].RangedAmmo = 10;
+            Monsters[c].MaximumRange = 10;
+            Monsters[c].TriesToKeepMinimumDistance = 5;
 
             c = 's';
             Monsters[c] = new MonsterCharacter();           // Toss 1 spear at short range, then charge into melee.
@@ -63,6 +67,9 @@ namespace LD36Quill18
             Monsters[c].Chixel = new Chixel(c, ConsoleColor.Red);
             Monsters[c].Health = Monsters[c].MaxHealth = 20;
             Monsters[c].MeleeDamage = 10;
+            Monsters[c].RangedDamage = 10;
+            Monsters[c].RangedAmmo = 1;
+            Monsters[c].MaximumRange = 5;
 
 
             c = 'r';
@@ -72,6 +79,9 @@ namespace LD36Quill18
             Monsters[c].Chixel = new Chixel(c, ConsoleColor.Red);
             Monsters[c].Health = Monsters[c].MaxHealth = 10;
             Monsters[c].MeleeDamage = 5;
+            Monsters[c].RangedDamage = 5;
+            Monsters[c].RangedAmmo = 5;
+            Monsters[c].MaximumRange = 7;
 
 
 

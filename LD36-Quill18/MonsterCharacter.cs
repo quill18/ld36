@@ -12,12 +12,19 @@ namespace LD36Quill18
         public MonsterCharacter(MonsterCharacter other) : base(other)
         {
             this.Name = other.Name;
+            this.RangedAmmo = other.RangedAmmo;
+            this.MaximumRange = other.MaximumRange;
+            this.TriesToKeepMinimumDistance = other.TriesToKeepMinimumDistance;
         }
 
         public MonsterCharacter(Tile tile, Floor floor, Chixel chixel) : base(tile, floor, chixel)
         {
             throw new Exception();
         }
+
+        public int RangedAmmo { get; set; }
+        public int MaximumRange { get; set; }
+        public int TriesToKeepMinimumDistance { get; set; }
 
         bool spottedPlayer = false;
         int targetX;
@@ -26,7 +33,7 @@ namespace LD36Quill18
         bool CanSeePlayer()
         {
             PlayerCharacter pc = Game.Instance.PlayerCharacter;
-            Tile[] los = Map.GeneratePath(X, Y, pc.X, pc.Y);
+            Tile[] los = Utility.GeneratePath(X, Y, pc.X, pc.Y);
             foreach (Tile t in los)
             {
                 if (t.IsLookable() == false)
@@ -42,15 +49,19 @@ namespace LD36Quill18
         {
             base.Update();
 
+            if (Cooldown > 0)
+                return;
+
             // Do AI
             PlayerCharacter pc = Game.Instance.PlayerCharacter;
             if (pc == null)
             {
+                // No PC exists
                 return;
             }
 
-
-            if (CanSeePlayer())
+            bool haveLineOfSight = CanSeePlayer();
+            if (haveLineOfSight)
             {
                 spottedPlayer = true;
                 targetX = pc.X;
@@ -61,6 +72,39 @@ namespace LD36Quill18
                 return;
             }
 
+            int playerDistance = Utility.CircleDistance(X, Y, targetX, targetY);
+
+            // Do we need to run from the player?
+            if (haveLineOfSight && TriesToKeepMinimumDistance >= playerDistance)
+            {
+                if (Update_MoveTowardsPlayer(false))
+                {
+                    // Successfully moved away.
+                    return;
+                }
+
+                // If we failed, we'll try to shoot or melee instead
+            }
+
+            // Do we have ranged attacks & are in range?
+            if (haveLineOfSight && playerDistance > 1 && RangedAmmo > 0 && MaximumRange >= playerDistance)
+            {
+                Update_ShootPlayer();
+                return;
+            }
+
+            Update_MoveTowardsPlayer();
+        }
+
+        void Update_ShootPlayer()
+        {
+            FireTowards(targetX, targetY);
+
+            Cooldown = 3; // Ranged attacks only happen every 3 ticks.
+        }
+
+        bool Update_MoveTowardsPlayer(bool runTowards = true)
+        {
             int dX = 0;
             int dY = 0;
 
@@ -81,8 +125,27 @@ namespace LD36Quill18
                 dY = 1;
             }
 
-            MoveBy(dX, dY);
+            if (!runTowards)
+            {
+                dX = -dX;
+                dY = -dY;
+            }
+
+            if (MoveBy(dX, dY) == false)
+            {
+                // Try sidestepping instead?
+                if (MoveBy(dX, 0) == false)
+                {
+                    if (MoveBy(0, dY) == false)
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
         }
+
     }
 }
 
