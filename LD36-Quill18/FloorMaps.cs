@@ -208,14 +208,14 @@ namespace LD36Quill18
                 item.EquipSlot = EquipSlot.Shoulder;
                 item.OnEquip += (i, c) =>
                 {
-                    c.RangedDamage += 5;
+                    c.RangedDamage += 10;
                     c.EnergyPerRanged = 10;
                     c.MoneyPerRanged = 10;
                     c.HasRanged = true;
                 };
                 item.OnUnequip += (i, c) =>
                 {
-                    c.RangedDamage -= 5;
+                    c.RangedDamage -= 10;
                     c.EnergyPerRanged = PlayerCharacter.DefaultEnergyPerRanged;
                     c.MoneyPerRanged = 0;
                     c.HasRanged = false;
