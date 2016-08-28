@@ -162,6 +162,12 @@ namespace LD36Quill18
                 return false;
             }
 
+            if (newX == X && newY == Y)
+            {
+                // No move requested.
+                return true;
+            }
+
             Tile newTile = this.Floor.GetTile(newX, newY);
 
             // Is there an enemy standing in our target tile?
@@ -170,8 +176,9 @@ namespace LD36Quill18
                 MeleeAttack(newTile.Character);
                 if (newTile.Character != null)
                 {
-                    // Character is still there. Abort move.
-                    return false;
+                    // Character is still there. Abort move,
+                    // but tell the character to stop trying.
+                    return true;
                 }
             }
             // If so, we should try to melee attack it.
@@ -295,7 +302,6 @@ namespace LD36Quill18
             }
 
             int dmg = RollDamage(MeleeDamage);
-            target.TakeDamage( dmg );
 
             if (this == Game.Instance.PlayerCharacter)
             {
@@ -305,6 +311,7 @@ namespace LD36Quill18
                 Game.Instance.Message(string.Format("{0} hits you for {1} damage!", this.Name, dmg));
             }
 
+            target.TakeDamage(dmg);
         }
 
         bool OpenDoor(Tile tile)

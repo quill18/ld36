@@ -1,14 +1,28 @@
 ﻿<Properties StartupItem="LD36-Quill18\LD36-Quill18.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
-  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches>
+    <Watch file="LD36-Quill18\Floor.cs" line="100" offsetX="934" offsetY="2206" expression="RedrawRequests.Rects" liveUpdate="False" />
+  </MonoDevelop.Ide.DebuggingService.PinnedWatches>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
-  <MonoDevelop.Ide.Workbench ActiveDocument="LD36-Quill18\FrameBuffer.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="LD36-Quill18\Floor.cs">
     <Files>
-      <File FileName="LD36-Quill18\Game.cs" Line="171" Column="9" />
-      <File FileName="LD36-Quill18\FrameBuffer.cs" Line="28" Column="10" />
-      <File FileName="LD36-Quill18\Program.cs" Line="16" Column="1" />
+      <File FileName="LD36-Quill18\FloorMaps.cs" Line="75" Column="123" />
+      <File FileName="LD36-Quill18\MonsterList.cs" Line="77" Column="50" />
+      <File FileName="LD36-Quill18\PlayerCharacter.cs" Line="127" Column="1" />
+      <File FileName="LD36-Quill18\Tile.cs" Line="41" Column="36" />
+      <File FileName="LD36-Quill18\Character.cs" Line="168" Column="29" />
+      <File FileName="LD36-Quill18\Item.cs" Line="46" Column="36" />
+      <File FileName="LD36-Quill18\Utility.cs" Line="172" Column="43" />
+      <File FileName="LD36-Quill18\Intro.cs" Line="175" Column="14" />
+      <File FileName="LD36-Quill18\ItemList.cs" Line="37" Column="10" />
+      <File FileName="LD36-Quill18\KeyboardHandler.cs" Line="18" Column="38" />
+      <File FileName="LD36-Quill18\Program.cs" Line="16" Column="16" />
+      <File FileName="LD36-Quill18\Game.cs" Line="242" Column="21" />
+      <File FileName="LD36-Quill18\FrameBuffer.cs" Line="9" Column="1" />
+      <File FileName="LD36-Quill18\Floor.cs" Line="210" Column="18" />
+      <File FileName="LD36-Quill18\MonsterCharacter.cs" Line="137" Column="25" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.ItemProperties.LD36-Quill18 PreferredExecutionTarget="MonoDevelop.Default" />

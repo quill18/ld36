@@ -15,7 +15,7 @@ namespace LD36Quill18
             Items[c] = new Item();
             Items[c].Name = "Battery (9v)";
             Items[c].Chixel = new Chixel(c, ConsoleColor.Green);
-            Items[c].OnUse += (item) => { OnUse_ChangeEnergy(item, 25); };
+            Items[c].OnUse += (item) => { OnUse_ChangeEnergy(item, 250); };
             Items[c].UsesLeft = 1;
 
             c = '$';
@@ -26,7 +26,7 @@ namespace LD36Quill18
 
             c = '&';
             Items[c] = new Item();
-            Items[c].Name = "Unpower Warbot";
+            Items[c].Name = "Unpowered Warbot";
             Items[c].Description = "Power cells are completely depleted.";
             Items[c].Chixel = new Chixel(c, ConsoleColor.Red);
             Items[c].Static = true;

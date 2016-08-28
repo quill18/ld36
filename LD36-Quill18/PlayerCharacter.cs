@@ -14,10 +14,6 @@ namespace LD36Quill18
     {
         public PlayerCharacter(Tile tile, Floor floor, Chixel chixel) : base(tile, floor, chixel)
         {
-            if (_instance != null)
-            {
-                throw new Exception("More than one player?!?");
-            }
             _instance = this;
 
             Faction = Faction.Player;
@@ -29,8 +25,9 @@ namespace LD36Quill18
             Items = new Item[26];
 
             Name = "BE-02";
+            Description = "Covered in 4,000 years of dust, rust, and obsolescence.";
 
-            Energy = 1000;
+            Energy = 130;
             EnergyPerMove = DefaultEnergyPerMove;
             EnergyPerMelee = DefaultEnergyPerMelee;
             EnergyPerRanged = DefaultEnergyPerRanged;
@@ -63,7 +60,20 @@ namespace LD36Quill18
 
         public Item[] Items { get; set; }
         public int Money { get; set; }
-        public int Energy { get; set; }
+
+        public int Energy { 
+            get
+            {
+                return _Energy;
+            }
+            set
+            {
+                _Energy = value;
+                if (_Energy < 0)
+                    _Energy = 0;
+            }
+        }
+
         public int EnergyPerMove { get; set; }
         public int EnergyPerMelee { get; set; }
         public int EnergyPerRanged { get; set; }
@@ -76,11 +86,13 @@ namespace LD36Quill18
         private int target_dX;
         private int target_dY;
         private bool queuedFireAt;
+        private int _Energy;
 
         public override void Die()
         {
             base.Die();
             Game.Instance.PlayerCharacter = null;
+            Game.Instance.BSOD();
         }
 
         public void QueueMoveBy(int dX, int dY)
@@ -100,6 +112,11 @@ namespace LD36Quill18
         public override void Update()
         {
             base.Update();
+
+            if (Energy <= 0)
+            {
+                Game.Instance.Message("POWER CELL DEPLETED -- Operating on Reserves.");
+            }
 
             if (queuedFireAt)
             {
@@ -231,6 +248,9 @@ namespace LD36Quill18
         public void Unequip(int slot)
         {
             Item oldEquip = EquippedItems[(int)slot];
+            if (oldEquip == null)
+                return;
+
             EquippedItems[(int)slot] = null;
             oldEquip.UnEquip(this);
             AddItem(oldEquip);
@@ -256,6 +276,12 @@ namespace LD36Quill18
 
         public void GoDown()
         {
+            if (this.Tile == null)
+            {
+                Game.Instance.DebugMessage("Null tile when descending stairs. Are you dead?");
+                return;
+            }
+
             if (this.Tile.TileType != TileType.DOWNSTAIR)
             {
                 // Not on up stair, ignore.
@@ -273,12 +299,20 @@ namespace LD36Quill18
 
         void ChangeFloor(int floorNum)
         {
+            bool goingDown = floorNum > Game.Instance.Map.CurrentFloorIndex;
+
             this.Floor.RemoveCharacter(this);
             this.Floor = Game.Instance.Map.GetFloor(floorNum);
             this.Floor.AddCharacter(this);
             Game.Instance.Map.CurrentFloor = this.Floor;
-            this.Tile = this.Floor.GetTile(Tile.X, Tile.Y);
+
+            if (goingDown)
+                this.Tile = this.Floor.Upstair;  //.GetTile(Tile.X, Tile.Y);
+            else
+                this.Tile = this.Floor.Downstair;
+
             this.Floor.Recenter(true);
+            this.UpdateVision();
         }
 
 
@@ -310,7 +344,7 @@ namespace LD36Quill18
         {
             if (Energy <= EnergyPerMelee)
             {
-                Game.Instance.Message("Not enough energy to fire!");
+                Game.Instance.Message("Not enough energy to attack!");
                 return;
             }
 

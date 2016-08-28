@@ -83,7 +83,9 @@ namespace LD36Quill18
             Monsters[c].RangedAmmo = 5;
             Monsters[c].MaximumRange = 7;
 
-
+            // Corrupted Warbot
+            // Essentiod
+            // Giant "Q" for final boss
 
             Dictionary<char, MonsterCharacter> BaseMonsters = new Dictionary<char, MonsterCharacter>(Monsters);
             foreach (MonsterCharacter baseMonster in BaseMonsters.Values)

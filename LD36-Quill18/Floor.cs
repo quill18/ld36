@@ -56,6 +56,9 @@ namespace LD36Quill18
         private int centerThresholdX = 24;
         private int centerThresholdY = 7;
 
+        public Tile Upstair   { get; set; }
+        public Tile Downstair { get; set; }
+
         /// <summary>
         /// Redraws the tile at world coord x and y.
         /// </summary>
@@ -187,13 +190,22 @@ namespace LD36Quill18
                     Game.Instance.PlayerCharacter.Update();
                 }
 
-                // Process characters (who may move)
-                HashSet<Character> chars_temp = new HashSet<Character>(characters);
-                foreach (Character ch in chars_temp)
+                int numEnemyTurns = 1;
+                if (PlayerCharacter.Instance.Energy <= 0)
+                    numEnemyTurns = 2;
+
+                for (int i = 0; i < numEnemyTurns; i++)
                 {
-                    if (ch != Game.Instance.PlayerCharacter)
+                    HashSet<Character> chars_temp = new HashSet<Character>(characters);
+                    foreach (Character ch in chars_temp)
                     {
-                        ch.Update();
+                        if (Game.Instance.PlayerCharacter == null)
+                            return;
+                        
+                        if (ch != Game.Instance.PlayerCharacter)
+                        {
+                            ch.Update();
+                        }
                     }
                 }
             }

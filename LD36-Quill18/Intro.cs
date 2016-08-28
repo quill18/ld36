@@ -9,55 +9,94 @@ namespace LD36Quill18
         {
         }
 
+        public void AnyKey()
+        {
+            // Drain key presses
+            while (Console.KeyAvailable)
+            {
+                Console.ReadKey(true);
+            }
+
+            Console.WriteLine("[Press Any Key to Continue]");
+            Console.ReadKey(true);
+            Console.Clear();
+        }
+
         public void Play()
         {
             Console.Clear();
 
             BootSequence();
+            if (stopIntro)
+                return;
 
             Console.Write(Environment.NewLine);
             Console.Write(Environment.NewLine);
-            Console.WriteLine("[Press Any Key to Continue]");
-            Console.ReadKey(true);
+            AnyKey();
 
             CatchUpOnNews();
+            if (stopIntro)
+                return;
 
-            Console.Write(Environment.NewLine);
-            Console.Write(Environment.NewLine);
-            Console.WriteLine("[Press Any Key to Continue]");
-            Console.ReadKey(true);
+            AnyKey();
 
             DisplayGoals();
+            if (stopIntro)
+                return;
 
             Console.Write(Environment.NewLine);
             Console.Write(Environment.NewLine);
-            Console.WriteLine("[Press Any Key to Continue]");
-            Console.ReadKey(true);
+            AnyKey();
+        }
 
+        const int longPause  = 250;
+        const int shortPause = 100;
+
+        bool stopIntro = false;
+
+        void DoSleep(int millis)
+        {
+            if (Console.KeyAvailable)
+            {
+                ConsoleKeyInfo cki = Console.ReadKey(true);
+                if (cki.Key == ConsoleKey.Escape)
+                {
+                    // Bail from the intro.
+                    stopIntro = true;
+                    return;
+                }
+            }
+            Thread.Sleep(millis);
         }
 
         void BootSequence()
         {
+            if (stopIntro)
+                return;
+
             Console.WriteLine("WARBOT 9000 OS Version 10.16 -- S/N BE-02");
-            Thread.Sleep(500);
+            DoSleep(longPause);
             Console.WriteLine("BOOT SEQUENCE INITIATED");
-            Thread.Sleep(500);
+            DoSleep(longPause);
             for (int i = 0; i < 5; i++)
             {
                 Console.Write(".");
                 Console.Beep();
-                Thread.Sleep(30);
+                DoSleep(30);
             }
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("...SYSTEM ERROR");
-            Thread.Sleep(500);
-            //Console.Beep(1400, 1000);
+            DoSleep(longPause);
+            //Console.Beep(1400, shortPause0);
+
+            if (stopIntro)
+                return;
 
             Console.ForegroundColor = ConsoleColor.White;
             Console.Write(Environment.NewLine);
             Console.Write(Environment.NewLine);
             Console.WriteLine("Initiate systems check.");
-            Thread.Sleep(500);
+            DoSleep(longPause);
             for (int i = 0; i <= 100; i++)
             {
                 switch (i)
@@ -94,11 +133,11 @@ namespace LD36Quill18
                         Console.Write(Environment.NewLine);
                         Console.WriteLine("Quantum Power Cell: 0.013% Charged");
                         Console.ForegroundColor = ConsoleColor.Yellow;
-                        Thread.Sleep(500);
+                        DoSleep(longPause);
                         Console.WriteLine("Disabling non-essential functions.");
-                        Thread.Sleep(500);
+                        DoSleep(longPause);
                         Console.WriteLine("Redirecting reserve power to combat systems.");
-                        Thread.Sleep(500);
+                        DoSleep(longPause);
                         Console.Write("Replacing primary power cell: ");
                         Console.BackgroundColor = ConsoleColor.DarkRed;
                         Console.ForegroundColor = ConsoleColor.White;
@@ -109,7 +148,7 @@ namespace LD36Quill18
                 Console.CursorLeft = 0;
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.Write("{0}% Complete", i);
-                Thread.Sleep(10);
+                DoSleep(10);
             }
 
 
@@ -117,11 +156,14 @@ namespace LD36Quill18
 
         void CatchUpOnNews()
         {
+            if (stopIntro)
+                return;
+
             Console.WriteLine("DOWNLOAD OUTSTANDING ORDERS");
             for (int i = 0; i < 50; i++)
             {
                 Console.Write(".");
-                Thread.Sleep(30);
+                DoSleep(30);
             }
             Console.Write(Environment.NewLine);
 
@@ -129,7 +171,7 @@ namespace LD36Quill18
             for (int i = 0; i < 50; i++)
             {
                 Console.Write( Game.Instance.Random.Next(0,5) == 0 ? "+" : "-" );
-                Thread.Sleep(10);
+                DoSleep(10);
             }
 
             Console.Write(Environment.NewLine);
@@ -138,7 +180,7 @@ namespace LD36Quill18
             Console.WriteLine("");
             InboxItem("2036-04-30", "Thank you for purchasing Warbot 9000/BE-02!");
             InboxItem("2036-06-17", "Announcing: Warbot 9001, which obsoletes all others.");
-            InboxItem("2036-06-18", "Warbot AA-01 through MN-67 moved to reduncancy storage depot.");
+            InboxItem("2036-06-18", "Warbot AA-01 through MN-67 moved to redundancy storage depot.");
             InboxItem("2041-04-30", "Your Warranty on Warbot serial number BE-02 has Expired.");
             InboxItem("2074-06-13", "Military storage records corrupted by power surge.");
             InboxItem("2090-03-09", "RE: RE: RE: RE: Historic Peace Talks Unite Humanity");
@@ -159,6 +201,9 @@ namespace LD36Quill18
         int inboxCount = 1;
         void InboxItem(string d, string s)
         {
+            if (stopIntro)
+                return;
+
             Console.ForegroundColor = ConsoleColor.Green;
             Console.Write("[{0}] ", inboxCount++);
             Console.ForegroundColor = ConsoleColor.Blue;
@@ -168,70 +213,84 @@ namespace LD36Quill18
             for (int i = 0; i < s.Length; i++)
             {
                 Console.Write(s[i]);
-                Thread.Sleep(5);
+                DoSleep(2);
             }
             Console.Write(Environment.NewLine);
             Console.Beep();
-            Thread.Sleep(500);
+            DoSleep(shortPause);
+
+
+
         }
 
         void DisplayGoals()
         {
+            if (stopIntro)
+                return;
+
             Console.WriteLine("                    -- ASSIGNING MISSION PARAMETERS --");
             Console.Beep();
-            Thread.Sleep(100);
+            DoSleep(shortPause);
             Console.WriteLine("");
-            Thread.Sleep(100);
+            DoSleep(shortPause);
             Console.WriteLine("PRIME DIRECTIVE: Defend Earth");
             Console.Beep();
-            Thread.Sleep(500);
+            DoSleep(shortPause);
             Console.Write("   ANALYSIS: Success probability in current condition: ");
             Console.BackgroundColor = ConsoleColor.DarkRed;
             Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine("1.6e-35%");
             Console.ResetColor();
-            Thread.Sleep(500);
+            DoSleep(shortPause);
             Console.Write("   CURRENT STATUS: ");
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("On Hold");
             Console.ResetColor();
-            Thread.Sleep(500);
+
+            DoSleep(longPause);
+
             Console.WriteLine("");
-            Thread.Sleep(500);
+            DoSleep(shortPause);
             Console.WriteLine("SECONDARY OBJECTIVE: Re-initialize additional Warbots");
             Console.Beep();
-            Thread.Sleep(500);
+            DoSleep(shortPause);
             Console.WriteLine("   ANALYSIS: All power cores are degraded. Replacement required.");
-            Thread.Sleep(500);
+            DoSleep(shortPause);
             Console.Write("   CURRENT STATUS: ");
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("On Hold");
             Console.ResetColor();
-            Thread.Sleep(500);
+
+            DoSleep(longPause);
+
             Console.WriteLine("");
-            Thread.Sleep(500);
+            DoSleep(shortPause);
             Console.WriteLine("SECONDARY OBJECTIVE: Acquire Active Quantum Power Cell from Sub-Level 18");
             Console.Beep();
-            Thread.Sleep(500);
+            DoSleep(shortPause);
             Console.WriteLine("   ANALYSIS: Heavy opposition by invasion force expected.");
-            Thread.Sleep(500);
+            DoSleep(shortPause);
             Console.Write("   CURRENT STATUS: ");
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("Active");
             Console.ResetColor();
-            Thread.Sleep(500);
+
+            DoSleep(longPause);
+
             Console.WriteLine("");
-            Thread.Sleep(500);
+            DoSleep(shortPause);
             Console.WriteLine("SECONDARY OBJECTIVE: Initiate repair & rearmament protocol");
             Console.Beep();
-            Thread.Sleep(500);
+            DoSleep(shortPause);
             Console.WriteLine("   ANALYSIS: Scavenging possibilities exist. Fabrication units present.");
-            Thread.Sleep(500);
+            DoSleep(shortPause);
             Console.Write("   CURRENT STATUS: ");
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("Active");
             Console.ResetColor();
-            Thread.Sleep(500);
+
+            DoSleep(longPause);
+
             Console.WriteLine("");
 
         }

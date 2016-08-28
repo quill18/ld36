@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace LD36Quill18
 {
@@ -166,7 +167,30 @@ namespace LD36Quill18
             return '-';
         }
 
+        static public string WordWrap(string s, int width=60)
+        {
+            string[] words = s.Split(' ');
 
+            StringBuilder newSentence = new StringBuilder();
+
+
+            string line = "";
+            foreach (string word in words)
+            {
+                if ((line + word).Length + 1 > width)
+                {
+                    newSentence.AppendLine(line);
+                    line = "";
+                }
+
+                line += string.Format("{0} ", word);
+            }
+
+            if (line.Length > 0)
+                newSentence.AppendLine(line);
+
+            return newSentence.ToString();
+        }
     }
 
 }

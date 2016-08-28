@@ -11,16 +11,12 @@ namespace LD36Quill18
 
         public Game()
         {
-            if(_instance != null)
-            {
-                throw new Exception();
-            }
             _instance = this;
 
             Random = new Random();
             messageLog = new List<string>();
 
-            frameBuffer = new FrameBuffer(0, 0, Console.WindowWidth, Console.WindowHeight);
+            frameBuffer = new FrameBuffer(0, 0, Console.WindowWidth, Console.WindowHeight-1);
             LevelRenderArea = new Rect(0, 0, 80 - statAreaWidth, 24 - 3);
             //frameBufferStats = new FrameBuffer(Console.WindowWidth - statAreaWidth, 0, statAreaWidth, Console.WindowHeight);
 
@@ -105,7 +101,7 @@ namespace LD36Quill18
             PrintMessages();
             frameBuffer.DrawFrame();
 
-            if(exit)
+            if(exit || Restart)
             {
                 return false;
             }
@@ -118,6 +114,8 @@ namespace LD36Quill18
 
             return true;
         }
+
+        public bool Restart = false;
 
         void PrintMessages()
         {
@@ -133,7 +131,7 @@ namespace LD36Quill18
             for (int i = 0; i < numLines; i++)
             {
                 Console.SetCursorPosition(0, Console.WindowHeight - 1 - i);
-                Console.Write( messageLog[ messageLog.Count - 1 - i ].PadRight( FrameBuffer.Instance.Width - statAreaWidth - 1 ) );
+                Console.Write( messageLog[ messageLog.Count - 1 - i ].PadRight( FrameBuffer.Instance.Width - statAreaWidth - 1) );
             }
         }
 
@@ -171,7 +169,7 @@ namespace LD36Quill18
             while (y < Console.WindowHeight)
             {
                 //Console.SetCursorPosition(x, y);
-                frameBuffer.Write(x, y, "\u2551               ");
+                frameBuffer.Write(x, y, "\u2551                ");
                 y++;
             }
 
@@ -186,7 +184,7 @@ namespace LD36Quill18
                 y++;
                 frameBuffer.Write(x, y, string.Format("HP: {0}/{1}", PlayerCharacter.Health, PlayerCharacter.MaxHealth));
                 y++;
-                frameBuffer.Write(x, y, string.Format("Energy: {0}", PlayerCharacter.Energy));
+                frameBuffer.Write(x, y, string.Format("Energy: 0.{0}%", PlayerCharacter.Energy.ToString("d4")));
                 y++;
 
 
@@ -227,14 +225,14 @@ namespace LD36Quill18
 
                 if (tile.Character != null)
                 {
-                    frameBuffer.Write(x + 2, y, tile.Character.Name);
+                    frameBuffer.Write(x + 2, y, Utility.WordWrap(tile.Character.Name, statAreaWidth));
                 }
 
                 y++;
 
                 if (tile.Item != null)
                 {
-                    frameBuffer.Write(x + 2, y, tile.Item.Name);
+                    frameBuffer.Write(x + 2, y, Utility.WordWrap(tile.Item.Name, statAreaWidth));
                 }
 
                 y++;
@@ -243,7 +241,7 @@ namespace LD36Quill18
             else {
                 y++;
                 y++;
-                frameBuffer.Write(x + 2, y,"No Sensor\nCovereage");
+                frameBuffer.Write(x + 2, y,"No Sensor\nCoverage");
                 y++;
                 y++;
             }
@@ -260,7 +258,7 @@ namespace LD36Quill18
         void PrintHotkeys()
         {
             int x = FrameBuffer.Instance.Width - statAreaWidth + 1;
-            int y = FrameBuffer.Instance.Height - 10;
+            int y = FrameBuffer.Instance.Height - 6;
 
             frameBuffer.Write(x, y, "[F]ire");
             y++;
@@ -268,7 +266,11 @@ namespace LD36Quill18
             y++;
             frameBuffer.Write(x, y, "[L]ook");
             y++;
-            frameBuffer.Write(x, y, "[CTRL-Q] Quit");
+            frameBuffer.Write(x, y, "< Go Up");
+            y++;
+            frameBuffer.Write(x, y, "> Go Down");
+            y++;
+            frameBuffer.Write(x, y, "[CTRL-Q]uit");
             y++;
 
         }
@@ -279,12 +281,12 @@ namespace LD36Quill18
             if (KeyboardHandler.inventoryExamineMode)
             {
                 FrameBuffer.Instance.Write(20, 1, "Hit [?] to Stop Examining");
-                FrameBuffer.Instance.Write(20, 2, "Hit [E] to See Equiped");
+                FrameBuffer.Instance.Write(20, 2, "Hit [TAB] to See Equiped");
             }
             else
             {
                 FrameBuffer.Instance.Write(20, 1, "Hit [?] to Examine Items");
-                FrameBuffer.Instance.Write(20, 2, "Hit [E] to See Inventory");
+                FrameBuffer.Instance.Write(20, 2, "Hit [TAB] to See Inventory");
             }
 
             if (KeyboardHandler.inventoryEquippedMode)
@@ -320,6 +322,57 @@ namespace LD36Quill18
                     char c = (char)((int)'a' + i);
 
                     FrameBuffer.Instance.Write(x, y, string.Format("[{0}] {1}", c, name));
+                }
+            }
+        }
+
+        public void RestartGame()
+        {
+            Restart = true;
+        }
+
+
+        public void BSOD()
+        {
+            Console.BackgroundColor = ConsoleColor.Blue;
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Clear();
+
+            Console.WriteLine("A problem has been detected and Warbot 9000 has been shut down to prevent damage to your facility.");
+            Console.WriteLine("");
+            Console.WriteLine("STRUCTURAL_INTEGRITY_FAILURE");
+            Console.WriteLine("");
+            Console.WriteLine("If this is the first time you've seen this error screen,");
+            Console.WriteLine("restart your Warbot. If this screen appears again, follow");
+            Console.WriteLine("these steps:");
+            Console.WriteLine("");
+            Console.WriteLine("Check to make sure any new hardware or software is properly installed.");
+            Console.WriteLine("If this is a new installation, ask your military supplier for any Warbot");
+            Console.WriteLine("updates you might need.");
+            Console.WriteLine("");
+            Console.WriteLine("If problems continue, cease all invasion plans immediately and begin to");
+            Console.WriteLine("purge your military command structure. Disable BIOS memory options such as");
+            Console.WriteLine("caching or biological weaponry.");
+            Console.WriteLine("");
+            Console.WriteLine("");
+
+            Thread.Sleep(500);
+            Console.WriteLine("Not ready reading drive A");
+            Console.CursorVisible = true;
+
+            while (true)
+            {
+                Console.WriteLine("Abort, Retry, Ignore?");
+                string s = Console.ReadLine();
+                if (s.ToLower() == "abort" || s.ToLower() == "a")
+                {
+                    ExitGame();
+                    return;
+                }
+                if (s.ToLower() == "retry" || s.ToLower() == "r")
+                {
+                    RestartGame();
+                    return;
                 }
             }
         }

@@ -6,14 +6,7 @@ namespace LD36Quill18
     {
         public FrameBuffer(int left, int top, int width, int height)
         {
-            if (_instance != null)
-            {
-                //throw new Exception("Already have a framebuffer.");
-            }
-            else
-            {
-                _instance = this;
-            }
+            _instance = this;
 
             this.Left = left;
             this.Top = top;

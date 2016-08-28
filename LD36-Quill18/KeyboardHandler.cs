@@ -15,6 +15,14 @@ namespace LD36Quill18
                 {
                     Game.Instance.ExitGame();
                 }
+                if (((cki.Modifiers & ConsoleModifiers.Control) != 0) && cki.Key == ConsoleKey.B)
+                {
+                    Game.Instance.BSOD();
+                }
+                if (((cki.Modifiers & ConsoleModifiers.Control) != 0) && cki.Key == ConsoleKey.E)
+                {
+                    PlayerCharacter.Instance.Energy = -9999;
+                }
                 else
                 {
                     switch (Game.Instance.InputMode)
@@ -107,14 +115,14 @@ namespace LD36Quill18
                 Game.Instance.InputMode = InputMode.Aiming;
                 Game.Instance.aimingOverlay = new AimingOverlay();
                 Game.Instance.aimingOverlay.Draw();
-                Game.Instance.Message("Aim Mode Started: Hit [ENTER] to fire.");
+                Game.Instance.Message("Aim Mode Started: Hit [ENTER] to fire and [ESC] to cancel.");
             }
             else if (cki.Key == ConsoleKey.L)
             {
                 Game.Instance.InputMode = InputMode.Looking;
                 Game.Instance.lookingOverlay = new LookingOverlay();
                 Game.Instance.lookingOverlay.Draw();
-                Game.Instance.Message("Look Mode Started: Hit [ENTER] to examine.");
+                Game.Instance.Message("Look Mode Started: Hit [ENTER] to examine and [ESC] to cancel.");
             }
             else if (cki.Key == ConsoleKey.I)
             {
@@ -133,12 +141,14 @@ namespace LD36Quill18
             {
                 Game.Instance.InputMode = InputMode.Normal;
                 RedrawRequests.FullRedraw();
+                inventoryExamineMode = false;
+                inventoryEquippedMode = false;
             }
             else if (cki.KeyChar == '/' || cki.KeyChar == '?')
             {
                 inventoryExamineMode = !inventoryExamineMode;
             }
-            else if (cki.Key == ConsoleKey.E)
+            else if (cki.Key == ConsoleKey.Tab)
             {
                 inventoryEquippedMode = !inventoryEquippedMode;
             }

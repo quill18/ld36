@@ -34,9 +34,11 @@ namespace LD36Quill18
                     break;
                 case '<':
                     TileType = TileType.UPSTAIR;
+                    Floor.Upstair = this;
                     break;
                 case '>':
                     TileType = TileType.DOWNSTAIR;
+                    Floor.Downstair = this;
                     break;
                 case '@':
                     TileType = TileType.FLOOR;

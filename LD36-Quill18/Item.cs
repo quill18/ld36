@@ -43,7 +43,7 @@ namespace LD36Quill18
                 {
                     s += "- Equippable: " + EquipSlot.ToString() + "\n";
                 }
-                s += Description;
+                s += Utility.WordWrap(Description);
                 return s;
             }
         }
