@@ -167,7 +167,7 @@ namespace LD36Quill18
             return '-';
         }
 
-        static public string WordWrap(string s, int width=50)
+        static public string WordWrap(string s, int width=60)
         {
 			if (s == null)
 				return "";

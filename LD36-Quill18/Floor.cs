@@ -34,7 +34,6 @@ namespace LD36Quill18
                     char c = ' ';
                     if (x < lines[y+1].Length)
                     {
-                        // actual line doesn't have enough text. Assume floor.
                         c = lines[y+1][x];
 
                     }

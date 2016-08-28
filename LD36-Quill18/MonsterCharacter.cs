@@ -45,6 +45,22 @@ namespace LD36Quill18
             return true;
         }
 
+        public override void Die()
+        {
+            if (Tile.Item == null)
+            {
+                // Spawn a bit of scrap metal
+                Item item = new Item();
+                item.Name = "Metal Scraps";
+                item.Description = "Useless by itself, but can be used to provide raw matter to a 3D Fabricator.";
+                item.Value = 25;
+                item.Chixel = new Chixel('$', ConsoleColor.Yellow);
+                Tile.Item = item;
+            }
+
+            base.Die();
+        }
+
         public override void Update()
         {
             base.Update();
@@ -134,9 +150,9 @@ namespace LD36Quill18
             if (MoveBy(dX, dY) == false)
             {
                 // Try sidestepping instead?
-                if (MoveBy(dX, 0) == false)
+                if (dX != 0 && MoveBy(dX, 0) == false)
                 {
-                    if (MoveBy(0, dY) == false)
+                    if (dY != 0 && MoveBy(0, dY) == false)
                     {
                         return false;
                     }

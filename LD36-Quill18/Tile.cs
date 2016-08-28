@@ -15,10 +15,11 @@ namespace LD36Quill18
             this.Floor = floor;
             Item item;
 
+            TileType = TileType.FLOOR;
+
             switch(textChar)
             {
                 case ' ':
-                    TileType = TileType.FLOOR;
                     break;
                 case '#':
                     TileType = TileType.WALL;
@@ -45,7 +46,6 @@ namespace LD36Quill18
                     TileType = TileType.DOOR_LOCKED;
                     break;
                 case '@':
-                    TileType = TileType.FLOOR;
 
                     // Spawn a character (only if one doesn't exist)
                     Game.Instance.Message("Character spawned!");
@@ -102,6 +102,14 @@ namespace LD36Quill18
                         // Yup, it's a monster.
                         MonsterCharacter mc = new MonsterCharacter(MonsterList.Monsters[textChar]);
                         mc.Tile = this;
+
+                        // Buff the monsters as we go down in level.
+                        mc.RangedDamage += (Floor.FloorIndex-1) / 2;
+                        mc.MeleeDamage += Floor.FloorIndex / 2;
+                        mc.DamageReduction += Floor.FloorIndex / 3;
+                        mc.ToHitBonus += (Floor.FloorIndex+1) / 3;
+                        mc.DodgeBonus += Floor.FloorIndex / 3;
+
                         return;
                     }
                     else if (ItemList.Items.ContainsKey(textChar))
@@ -161,6 +169,7 @@ namespace LD36Quill18
             }
 
             TileType = TileType.DOOR_CLOSED;
+            Game.Instance.Message("You unlock the door.");
         }
 
         public bool IsWalkable()
@@ -174,7 +183,6 @@ namespace LD36Quill18
         public bool IsLookable()
         {
             return TileType != TileType.WALL && 
-                                       TileType != TileType.DEBRIS && 
                                        TileType != TileType.DOOR_CLOSED && 
                                        TileType != TileType.DOOR_LOCKED;
         }

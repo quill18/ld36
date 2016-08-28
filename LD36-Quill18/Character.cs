@@ -251,7 +251,7 @@ namespace LD36Quill18
 
             foreach (Tile t in tiles)
             {
-                if (t.TileType == TileType.WALL || t.TileType == TileType.DOOR_CLOSED)
+                if (t.IsLookable() == false)
                 {
                     // Whack.
                     return;
@@ -266,11 +266,12 @@ namespace LD36Quill18
                 if (t.Character != null && t.Character.Faction != this.Faction)
                 {
                     int dmg = RollDamage(RangedDamage);
-                    dmg = t.Character.TakeDamage(dmg);
+                    Character victim = t.Character;
+                    dmg = victim.TakeDamage(dmg);
 
                     if (this == Game.Instance.PlayerCharacter)
                     {
-                        Game.Instance.Message(string.Format("You hit {0} for {1} damage!", t.Character.Name, dmg));
+                        Game.Instance.Message(string.Format("You hit {0} for {1} damage!", victim.Name, dmg));
                     }
                     else {
                         Game.Instance.Message(string.Format("{0} hits you for {1} damage!", this.Name, dmg));

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading;
+
 namespace LD36Quill18
 {
     public enum EquipSlot { 
@@ -31,6 +33,7 @@ namespace LD36Quill18
             EnergyPerMove = DefaultEnergyPerMove;
             EnergyPerMelee = DefaultEnergyPerMelee;
             EnergyPerRanged = DefaultEnergyPerRanged;
+            MoneyPerRanged = 0;
             VisionRadius = DefaultVisionRadius;
 
             MeleeDamage = DefaultMeleeAttackDamage;
@@ -46,7 +49,7 @@ namespace LD36Quill18
         public const int DefaultEnergyPerRanged = 10;
         public const int DefaultEnergyPerMove = 1;
         public const int DefaultVisionRadius = 2;
-        public const int DefaultRangedAttackDamage = 6;
+        public const int DefaultRangedAttackDamage = 0;
         public const int DefaultMeleeAttackDamage = 6;
 
 
@@ -60,8 +63,20 @@ namespace LD36Quill18
 
         public Item[] Items { get; set; }
         public int Money { get; set; }
+        public bool HasRanged = false;
 
-        public int MaxEnergy { get; set; }
+        public int MaxEnergy
+        { 
+            get
+            {
+                return _MaxEnergy;
+            }
+            set
+            {
+                _MaxEnergy = value;
+                Energy = Energy;    // Reset energy to make sure within bounds
+            }
+        }
         public int Energy { 
             get
             {
@@ -80,6 +95,7 @@ namespace LD36Quill18
         public int EnergyPerMove { get; set; }
         public int EnergyPerMelee { get; set; }
         public int EnergyPerRanged { get; set; }
+        public int MoneyPerRanged { get; set; }
 
         public int VisionRadius { 
             get
@@ -101,6 +117,7 @@ namespace LD36Quill18
         private int target_dY;
         private bool queuedFireAt;
         private int _Energy;
+        private int _MaxEnergy;
         private int _VisionRadius;
 
         public override void Die()
@@ -222,10 +239,10 @@ namespace LD36Quill18
 
             Console.Beep();
 
-            if (item.IsMoney)
+            if (item.Value > 0)
             {
                 // random amount of monies
-                int m = Game.Instance.Random.Next(50, 100);
+                int m = Game.Instance.Random.Next(item.Value/2, item.Value);
 
                 m = (int)((double)m * Math.Pow( 1.25, Game.Instance.Map.CurrentFloorIndex  ));
 
@@ -284,7 +301,7 @@ namespace LD36Quill18
 
             // Apply new effects
             item.Equip(this);
-            Game.Instance.Message(string.Format("Equipped {0}", item.Name));
+            Game.Instance.Message(string.Format("Equipped {0} in {1} slot.", item.Name, slot.ToString()));
         }
 
         public void Unequip(int slot)
@@ -362,6 +379,7 @@ namespace LD36Quill18
         {
             // This can only be called by the player character
             ((PlayerCharacter)src).Energy -= ((PlayerCharacter)src).EnergyPerRanged;
+            ((PlayerCharacter)src).Money -= ((PlayerCharacter)src).MoneyPerRanged;
         }
 
         public static void DefaultOnMeleeAttack(Character src, Character target)
@@ -373,12 +391,25 @@ namespace LD36Quill18
 
         public override void FireTowards(int x, int y)
         {
-            if (Energy <= EnergyPerRanged)
+            if (Energy < EnergyPerRanged)
             {
                 Game.Instance.Message("Not enough energy to fire!");
+                Console.Beep();
+                Thread.Sleep(100);
+                Console.Beep();
+                Thread.Sleep(100);
                 return;
             }
-            
+            if (Money < MoneyPerRanged)
+            {
+                Game.Instance.Message("Not enough metal scraps to fire!");
+                Console.Beep();
+                Thread.Sleep(100);
+                Console.Beep();
+                Thread.Sleep(100);
+                return;
+            }
+
             base.FireTowards(x, y);
         }
 

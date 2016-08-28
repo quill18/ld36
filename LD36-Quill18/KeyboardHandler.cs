@@ -29,6 +29,14 @@ namespace LD36Quill18
                 {
                     PlayerCharacter.Instance.Money += 999999;
                 }
+                if (cheatsEnabled && ((cki.Modifiers & ConsoleModifiers.Control) != 0) && cki.Key == ConsoleKey.V)
+                {
+                    PlayerCharacter.Instance.VisionRadius += 99;
+                }
+                if (cheatsEnabled && ((cki.Modifiers & ConsoleModifiers.Control) != 0) && cki.Key == ConsoleKey.H)
+                {
+                    PlayerCharacter.Instance.Health = PlayerCharacter.Instance.MaxHealth = 999999;
+                }
                 else
                 {
                     switch (Game.Instance.InputMode)
@@ -104,7 +112,7 @@ namespace LD36Quill18
                 PlayerCharacter.Instance.QueueMoveBy(-1, 1);
                 Game.Instance.DoTick();
             }
-            else if (cki.Key == ConsoleKey.NumPad5)
+            else if (cki.Key == ConsoleKey.NumPad5 || cki.KeyChar == '5')
             {
                 // Do nothing
                 Game.Instance.DoTick();
@@ -121,6 +129,12 @@ namespace LD36Quill18
             }
             else if (cki.Key == ConsoleKey.F)
             {
+                if (PlayerCharacter.Instance.HasRanged == false)
+                {
+                    Game.Instance.Message("No ranged weapon equipped.");
+                    return;
+                }
+
                 Game.Instance.InputMode = InputMode.Aiming;
                 Game.Instance.aimingOverlay = new AimingOverlay();
                 Game.Instance.aimingOverlay.Draw();
@@ -285,7 +299,7 @@ namespace LD36Quill18
 
                 if (tile.Character != null)
                 {
-                    Game.Instance.Message(tile.Character.Name + ": " + tile.Character.Description);
+                    Game.Instance.Message( Utility.WordWrap(tile.Character.Name + ": " + tile.Character.Description) );
                 }
                 if (tile.Item != null)
                 {
@@ -364,6 +378,9 @@ namespace LD36Quill18
                     Game.Instance.Message("Insufficient metal scraps for upgrade.");
                     return;
                 }
+
+                Game.Instance.Message("PURCHASED: " + fu.Name);
+                Console.Beep();
 
                 pc.Money -= fu.NextUpgradeCost;
 

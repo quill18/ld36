@@ -308,10 +308,10 @@ namespace LD36Quill18
 
         void DrawFabricatorScreen()
         {
-            FrameBuffer.Instance.Write(0, 0, "              -- Augmentation Station --");
-            FrameBuffer.Instance.Write(0, 1, "Improving near-scrap-metal with scrap-metal since 2092!");
-            FrameBuffer.Instance.Write(0, 2, "           (Permanently upgrade a statistic.)");
-            FrameBuffer.Instance.Write(0, 4, "               Your Metal Scraps: $" + PlayerCharacter.Instance.Money);
+            FrameBuffer.Instance.Write(5, 0, "              -- Augmentation Station --");
+            FrameBuffer.Instance.Write(5, 1, "Improving near-scrap-metal with scrap-metal since 2092!");
+            FrameBuffer.Instance.Write(5, 2, "           (Permanently upgrade a statistic.)");
+            FrameBuffer.Instance.Write(5, 4, "               Your Metal Scraps: $" + PlayerCharacter.Instance.Money);
 
 
 

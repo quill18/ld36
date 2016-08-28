@@ -24,7 +24,7 @@ namespace LD36Quill18
             Items[c].Name = "Welding Kit";
             Items[c].Description = "Enough to seal a few holes in your armor plating.";
             Items[c].Chixel = new Chixel(c, ConsoleColor.Green);
-            Items[c].OnUse += (item) => { OnUse_Heal(item, 250); };
+            Items[c].OnUse += (item) => { OnUse_Heal(item, 25); };
             Items[c].UsesLeft = 1;
 
             c = '!';
@@ -39,14 +39,14 @@ namespace LD36Quill18
             Items[c] = new Item();
             Items[c].Name = "Metal Scraps";
 			Items[c].Description = "Useless by itself, but can be used to provide raw matter to a 3D Fabricator.";
-			Items[c].IsMoney = true;
+			Items[c].Value = 100;
             Items[c].Chixel = new Chixel(c, ConsoleColor.Yellow);
 
             c = '&';
             Items[c] = new Item();
             Items[c].Name = "Unpowered Warbot";
             Items[c].Description = "This unit's power cells are completely depleted.";
-            Items[c].Chixel = new Chixel(c, ConsoleColor.Red);
+            Items[c].Chixel = new Chixel(c, ConsoleColor.Gray);
             Items[c].Static = true;
 
 
