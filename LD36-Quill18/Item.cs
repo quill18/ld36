@@ -8,6 +8,7 @@ namespace LD36Quill18
     {
         public Item()
         {
+            Value = 10;
         }
 
         public Item(Item other)
@@ -23,17 +24,30 @@ namespace LD36Quill18
             this.OnUnequip = other.OnUnequip;
             this.Description = other.Description;
             this.Static = other.Static;
+            this.IsKey = other.IsKey;
+            this.Value = other.Value;
+            this.IsFabricator = other.IsFabricator;
         }
 
         public Chixel Chixel { get; set; }
         public string Name { get; set; }
         public bool IsMoney = false;
+        public bool IsKey = false;
         public event Action OnPickup;
         public event Action<Item> OnUse;
         public int UsesLeft { get; set; }
         public EquipSlot EquipSlot { get; set; }
         public string Description { get; set; }
         public bool Static { get; set; }
+        public bool IsFabricator { get; set; }
+        public int Value { get; set; }
+        public int SellValue
+        {
+            get
+            {
+                return Value / 5;
+            }
+        }
 
         public string FullDescription { 
             get

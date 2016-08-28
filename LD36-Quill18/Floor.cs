@@ -15,7 +15,7 @@ namespace LD36Quill18
             string[] lines = floorMap.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
 
             // First, figure out the size of the floor
-            Height = lines.Length;
+            Height = lines.Length-1;
 
             foreach (string s in lines)
             {
@@ -32,10 +32,10 @@ namespace LD36Quill18
                 for (int x = 0; x < Width; x++)
                 {
                     char c = ' ';
-                    if (x < lines[y].Length)
+                    if (x < lines[y+1].Length)
                     {
                         // actual line doesn't have enough text. Assume floor.
-                        c = lines[y][x];
+                        c = lines[y+1][x];
 
                     }
                     tiles[x, y] = new Tile(x, y, this, c);

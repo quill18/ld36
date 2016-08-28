@@ -2,17 +2,18 @@
 
 namespace LD36Quill18
 {
-    public enum TileType { FLOOR, WALL, DOOR_CLOSED, DOOR_OPENED, UPSTAIR, DOWNSTAIR, DEBRIS }
+    public enum TileType { FLOOR, WALL, DOOR_CLOSED, DOOR_OPENED, UPSTAIR, DOWNSTAIR, DEBRIS, DOOR_LOCKED }
 
     public class Tile
     {
-        const string TILE_GLYPHS = @" #+-<>X";
+        const string TILE_GLYPHS = @" #+-<>X+";
 
         public Tile(int x, int y, Floor floor, char textChar)
         {
             this.X = x;
             this.Y = y;
             this.Floor = floor;
+            Item item;
 
             switch(textChar)
             {
@@ -40,6 +41,9 @@ namespace LD36Quill18
                     TileType = TileType.DOWNSTAIR;
                     Floor.Downstair = this;
                     break;
+                case '*':
+                    TileType = TileType.DOOR_LOCKED;
+                    break;
                 case '@':
                     TileType = TileType.FLOOR;
 
@@ -51,6 +55,33 @@ namespace LD36Quill18
                         throw new Exception("Already have a player character!");
                     }
                     Game.Instance.PlayerCharacter = new PlayerCharacter( this, this.Floor, new Chixel('@') );
+                    break;
+                case '»':
+                case '«':
+                    item = new Item();
+                    item.Name = "Conveyor Belt";
+                    item.Description = "Part of an old manufacturing system. Non-functional.";
+                    item.Chixel = new Chixel(textChar, ConsoleColor.Gray);
+                    item.Static = true;
+                    this.Item = item;
+                    break;
+                case '{':
+                case '}':
+                    item = new Item();
+                    item.Name = "Fabricator Casing";
+                    item.Description = "Stand on the '~' to interact.";
+                    item.Chixel = new Chixel(textChar, ConsoleColor.Gray);
+                    item.Static = true;
+                    this.Item = item;
+                    break;
+                case '~':
+                    item = new Item();
+                    item.Name = "Upgrade Station";
+                    item.Description = "Permanently repair/upgrade some of your systems!";
+                    item.Chixel = new Chixel(textChar, ConsoleColor.Green);
+                    item.Static = true;
+                    item.IsFabricator = true;
+                    this.Item = item;
                     break;
                 default:
                     // Everything else is either a monster or item
@@ -83,7 +114,7 @@ namespace LD36Quill18
                     //throw new Exception("No character entry for: " + textChar);
                     Game.Instance.DebugMessage("No character entry for: " + textChar);
 
-                    Item item = new Item();
+                    item = new Item();
 					item.Name = "Furniture";
 					item.Description = "There is a word from some dead, long forgotten language engraved on it.";
 					item.Chixel = new Chixel(textChar, ConsoleColor.Gray);
@@ -105,6 +136,10 @@ namespace LD36Quill18
             {
                 _TileType = value;
                 Chixel = new Chixel( TILE_GLYPHS[(int)_TileType] );
+                if (_TileType == TileType.DOOR_LOCKED)
+                {
+                    Chixel.ForegroundColor = ConsoleColor.Red;
+                }
             }
         }
 
@@ -118,14 +153,30 @@ namespace LD36Quill18
 
         private TileType _TileType;
 
+        public void Unlock()
+        {
+            if (TileType != TileType.DOOR_LOCKED)
+            {
+                return;
+            }
+
+            TileType = TileType.DOOR_CLOSED;
+        }
+
         public bool IsWalkable()
         {
-            return TileType != TileType.WALL && TileType != TileType.DEBRIS;
+            return TileType != TileType.DOOR_LOCKED &&
+                                       TileType != TileType.WALL &&
+                                       TileType != TileType.DEBRIS;
+            
         }
 
         public bool IsLookable()
         {
-            return TileType != TileType.WALL && TileType != TileType.DEBRIS && TileType != TileType.DOOR_CLOSED;
+            return TileType != TileType.WALL && 
+                                       TileType != TileType.DEBRIS && 
+                                       TileType != TileType.DOOR_CLOSED && 
+                                       TileType != TileType.DOOR_LOCKED;
         }
 
 

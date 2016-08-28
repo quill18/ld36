@@ -4,7 +4,7 @@ using System.Threading;
 
 namespace LD36Quill18
 {
-    public enum InputMode { Normal, Aiming, Inventory, Looking }
+    public enum InputMode { Normal, Aiming, Inventory, Looking, Fabricator }
 
     public class Game
     {
@@ -22,11 +22,14 @@ namespace LD36Quill18
 
             Map = new Map();
 
+            SetupUpgrades();
+
             PlayerCharacter.UpdateVision();
             Map.CurrentFloor.Recenter(true);
         }
 
         public Map Map { get; protected set; }
+        public FabricatorUpgrade[] FabricatorUpgrades { get; set; }
 
         static public Game Instance
         {
@@ -67,6 +70,20 @@ namespace LD36Quill18
 
         public int SleepFor { get; set; }
 
+        private void SetupUpgrades()
+        {
+            FabricatorUpgrades = new FabricatorUpgrade[] {
+                new FabricatorUpgrade("Improved Impact Dampening (+10 Max Health)", (pc) => { pc.MaxHealth += 10; pc.Health += 10; }),
+                new FabricatorUpgrade("Add External Battery Pack (+0.0050% Max Energy)", (pc) => { pc.MaxEnergy += 50; pc.Energy += 50; }),
+                new FabricatorUpgrade("Upgrade Sensors (+1 Vision Range)", (pc) => { pc.VisionRadius += 1; }),
+                new FabricatorUpgrade("Add Armor Plating (+1 Damage Reduction)", (pc) => { pc.DamageReduction += 1; }),
+                new FabricatorUpgrade("Servo Actuator Replacement (+1 to Dodging)", (pc) => { pc.DodgeBonus += 1; }),
+                new FabricatorUpgrade("Targetting CPU Over-Clocking (+1 to Accuracy)", (pc) => { pc.ToHitBonus += 1; }),
+                new FabricatorUpgrade("Myomer Strengthening (+1 Melee Damage)", (pc) => { pc.MeleeDamage += 1; }),
+                new FabricatorUpgrade("Kinetic Accelerator Boost (+1 Ranged Damage)", (pc) => { pc.RangedDamage += 1; }),
+};
+        }
+
         /// <summary>
         /// Called non-stop by the main program loop
         /// </summary>
@@ -74,11 +91,21 @@ namespace LD36Quill18
         {
             //RedrawRequests.Clear();
 
+            if (ClearRequested)
+            {
+                ClearRequested = false;
+                FrameBuffer.Instance.Clear();
+            }
+
             KeyboardHandler.Update_Keyboard();
 
             if (InputMode == InputMode.Inventory)
             {
                 DrawInventoryScreen();
+            }
+            else if (InputMode == InputMode.Fabricator)
+            {
+                DrawFabricatorScreen();
             }
             else
             {
@@ -186,6 +213,8 @@ namespace LD36Quill18
                 y++;
                 frameBuffer.Write(x, y, string.Format("Energy: 0.{0}%", PlayerCharacter.Energy.ToString("d4")));
                 y++;
+                frameBuffer.Write(x, y, string.Format("Scraps: ${0}", PlayerCharacter.Money));
+                y++;
 
 
             }
@@ -275,9 +304,32 @@ namespace LD36Quill18
 
         }
 
+        public bool ClearRequested = false;
+
+        void DrawFabricatorScreen()
+        {
+            FrameBuffer.Instance.Write(0, 0, "              -- Augmentation Station --");
+            FrameBuffer.Instance.Write(0, 1, "Improving near-scrap-metal with scrap-metal since 2092!");
+            FrameBuffer.Instance.Write(0, 2, "           (Permanently upgrade a statistic.)");
+            FrameBuffer.Instance.Write(0, 4, "               Your Metal Scraps: $" + PlayerCharacter.Instance.Money);
+
+
+
+            int y = 8;
+
+            for (int i = 0; i < FabricatorUpgrades.Length; i++)
+            {
+                char c = (char)((int)'a' + i);
+                FrameBuffer.Instance.Write(5, y++, 
+                       c +") [$"+FabricatorUpgrades[i].NextUpgradeCost.ToString()+"] " + FabricatorUpgrades[i].Name
+                      );
+            }
+
+        }
+
         void DrawInventoryScreen()
         {
-            FrameBuffer.Instance.Write(30, 0, "Inventory");
+            FrameBuffer.Instance.Write(30, 0, "-- Inventory --");
             if (KeyboardHandler.inventoryExamineMode)
             {
                 FrameBuffer.Instance.Write(20, 1, "Hit [?] to Stop Examining");
@@ -303,7 +355,7 @@ namespace LD36Quill18
 
                     char c = (char)((int)'a' + i);
 
-                    FrameBuffer.Instance.Write(x, y, string.Format("[{0}] {1}", c, name));
+                    FrameBuffer.Instance.Write(x, y, string.Format("[{0}] {2}: {1}", c, name, Enum.GetNames(typeof(EquipSlot))[i]));
                 }
             }
             else

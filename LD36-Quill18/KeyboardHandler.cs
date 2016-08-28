@@ -11,17 +11,23 @@ namespace LD36Quill18
                 // Read one key
                 ConsoleKeyInfo cki = Console.ReadKey(true);
 
+                bool cheatsEnabled = true;
+
                 if (((cki.Modifiers & ConsoleModifiers.Control) != 0) && cki.Key == ConsoleKey.Q)
                 {
                     Game.Instance.ExitGame();
                 }
-                if (((cki.Modifiers & ConsoleModifiers.Control) != 0) && cki.Key == ConsoleKey.B)
+                if (cheatsEnabled && ((cki.Modifiers & ConsoleModifiers.Control) != 0) && cki.Key == ConsoleKey.B)
                 {
                     Game.Instance.BSOD();
                 }
-                if (((cki.Modifiers & ConsoleModifiers.Control) != 0) && cki.Key == ConsoleKey.E)
+                if (cheatsEnabled && ((cki.Modifiers & ConsoleModifiers.Control) != 0) && cki.Key == ConsoleKey.E)
                 {
                     PlayerCharacter.Instance.Energy = -9999;
+                }
+                if (cheatsEnabled && ((cki.Modifiers & ConsoleModifiers.Control) != 0) && cki.Key == ConsoleKey.D4)
+                {
+                    PlayerCharacter.Instance.Money += 999999;
                 }
                 else
                 {
@@ -38,6 +44,9 @@ namespace LD36Quill18
                             break;
                         case InputMode.Looking:
                             Update_Keyboard_Looking(cki);
+                            break;
+                        case InputMode.Fabricator:
+                            Update_Keyboard_Fabricator(cki);
                             break;
                     }
                 }
@@ -193,18 +202,6 @@ namespace LD36Quill18
                     }
                 }
 
-                i = (int)cki.KeyChar - 'A';
-                if (i >= 0 && i < PlayerCharacter.Instance.Items.Length)
-                {
-                    if (inventoryExamineMode)
-                    {
-                        Game.Instance.Message(PlayerCharacter.Instance.Items[i].FullDescription);
-                    }
-                    else
-                    {
-                        PlayerCharacter.Instance.UseItem(i);
-                    }
-                }
             }
         }
 
@@ -338,6 +335,42 @@ namespace LD36Quill18
                 overlay.Y += 0;
             }
 
+        }
+
+        static void Update_Keyboard_Fabricator(ConsoleKeyInfo cki)
+        {
+            FrameBuffer.Instance.Clear();
+            if (cki.Key == ConsoleKey.Escape)
+            {
+                Game.Instance.InputMode = InputMode.Normal;
+                RedrawRequests.FullRedraw();
+            }
+            else
+            {
+                // Try to map to an inventory item
+                int i = (int)cki.KeyChar - 'a';
+
+                if (i < 0 || i >= Game.Instance.FabricatorUpgrades.Length)
+                {
+                    // Out of bounds for upgrades.
+                    return;
+                }
+
+                FabricatorUpgrade fu = Game.Instance.FabricatorUpgrades[i];
+                PlayerCharacter pc = PlayerCharacter.Instance;
+
+                if (fu.NextUpgradeCost > pc.Money)
+                {
+                    Game.Instance.Message("Insufficient metal scraps for upgrade.");
+                    return;
+                }
+
+                pc.Money -= fu.NextUpgradeCost;
+
+                fu.OnPurchase( pc );
+
+                fu.NextUpgradeCost = (int)(fu.NextUpgradeCost*2);
+            }
         }
 
     }

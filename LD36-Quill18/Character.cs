@@ -127,7 +127,7 @@ namespace LD36Quill18
                 Cooldown--;
         }
 
-        public void TakeDamage(float dmg)
+        public int TakeDamage(float dmg)
         {
             dmg -= DamageReduction;
             if (dmg < 1)
@@ -139,6 +139,8 @@ namespace LD36Quill18
             {
                 Die();
             }
+
+            return (int)dmg;
         }
 
         virtual public void Die()
@@ -187,6 +189,17 @@ namespace LD36Quill18
             if (newTile.IsWalkable() == false)
             {
                 // Not walkable.
+                if (this == PlayerCharacter.Instance)
+                {
+                    if (newTile.TileType == TileType.DOOR_LOCKED)
+                    {
+                        Game.Instance.Message("This door is locked.");
+                    }
+                    else
+                    {
+                        Game.Instance.Message("**thud**");
+                    }
+                }
                 return false;
             }
 
@@ -253,6 +266,8 @@ namespace LD36Quill18
                 if (t.Character != null && t.Character.Faction != this.Faction)
                 {
                     int dmg = RollDamage(RangedDamage);
+                    dmg = t.Character.TakeDamage(dmg);
+
                     if (this == Game.Instance.PlayerCharacter)
                     {
                         Game.Instance.Message(string.Format("You hit {0} for {1} damage!", t.Character.Name, dmg));
@@ -261,7 +276,6 @@ namespace LD36Quill18
                         Game.Instance.Message(string.Format("{0} hits you for {1} damage!", this.Name, dmg));
                     }
 
-                    t.Character.TakeDamage(dmg);
 
                     return;
                 }
@@ -302,6 +316,7 @@ namespace LD36Quill18
             }
 
             int dmg = RollDamage(MeleeDamage);
+            dmg = target.TakeDamage(dmg);
 
             if (this == Game.Instance.PlayerCharacter)
             {
@@ -311,7 +326,6 @@ namespace LD36Quill18
                 Game.Instance.Message(string.Format("{0} hits you for {1} damage!", this.Name, dmg));
             }
 
-            target.TakeDamage(dmg);
         }
 
         bool OpenDoor(Tile tile)

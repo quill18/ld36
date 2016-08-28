@@ -131,7 +131,7 @@ namespace LD36Quill18
                     case 98:
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.Write(Environment.NewLine);
-                        Console.WriteLine("Quantum Power Cell: 0.013% Charged");
+                        Console.WriteLine("Quantum Power Cell: 0.027% Charged");
                         Console.ForegroundColor = ConsoleColor.Yellow;
                         DoSleep(longPause);
                         Console.WriteLine("Disabling non-essential functions.");

@@ -15,6 +15,7 @@ namespace LD36Quill18
             }
 
 			Console.ResetColor();
+            Console.Clear();
         }
 
         static bool RunGame()

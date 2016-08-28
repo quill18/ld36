@@ -5,7 +5,7 @@ namespace LD36Quill18
         Head,               // Accuracy
         Chest,              // Max health / energy
         Arm,                // Primarily melee damage
-        ShoulderLauncher,   // Ranged -- very resource intensive.
+        Shoulder,   // Ranged -- very resource intensive.
         Legs                // Dodging
     }
     // All slots also have a certain armor contribution
@@ -27,7 +27,7 @@ namespace LD36Quill18
             Name = "BE-02";
             Description = "Covered in 4,000 years of dust, rust, and obsolescence.";
 
-            Energy = 130;
+            Energy = MaxEnergy = 270;
             EnergyPerMove = DefaultEnergyPerMove;
             EnergyPerMelee = DefaultEnergyPerMelee;
             EnergyPerRanged = DefaultEnergyPerRanged;
@@ -61,6 +61,7 @@ namespace LD36Quill18
         public Item[] Items { get; set; }
         public int Money { get; set; }
 
+        public int MaxEnergy { get; set; }
         public int Energy { 
             get
             {
@@ -71,6 +72,8 @@ namespace LD36Quill18
                 _Energy = value;
                 if (_Energy < 0)
                     _Energy = 0;
+                if (_Energy > MaxEnergy)
+                    _Energy = MaxEnergy;
             }
         }
 
@@ -78,7 +81,18 @@ namespace LD36Quill18
         public int EnergyPerMelee { get; set; }
         public int EnergyPerRanged { get; set; }
 
-        public int VisionRadius { get; set; }
+        public int VisionRadius { 
+            get
+            {
+                return _VisionRadius;
+            }
+
+            set
+            {
+                _VisionRadius = value;
+                UpdateVision();
+            }
+        }
 
         public Item[] EquippedItems { get; set; }
 
@@ -87,11 +101,12 @@ namespace LD36Quill18
         private int target_dY;
         private bool queuedFireAt;
         private int _Energy;
+        private int _VisionRadius;
 
         public override void Die()
         {
             base.Die();
-            Game.Instance.PlayerCharacter = null;
+            //Game.Instance.PlayerCharacter = null;
             Game.Instance.BSOD();
         }
 
@@ -132,6 +147,24 @@ namespace LD36Quill18
 
         public override bool MoveTo(int newX, int newY)
         {
+            Tile t = Floor.GetTile(newX, newY);
+            if (t.TileType == TileType.DOOR_LOCKED)
+            {
+                // Do we have a key?
+                foreach (Item keyItem in Items)
+                {
+                    if (keyItem != null && keyItem.IsKey)
+                    {
+                        t.Unlock();
+                        keyItem.UsesLeft--;
+                        if (keyItem.UsesLeft <= 0)
+                        {
+                            RemoveItem(keyItem);
+                        }
+                    }
+                }
+            }
+
             if (base.MoveTo(newX, newY) == false)
             {
                 // Didn't actually move.
@@ -142,9 +175,15 @@ namespace LD36Quill18
 
             // Are we on an item?
             Item item = Tile.Item;
-            if (item != null && item.Static==false)
+            if (item != null && item.Static == false)
             {
                 AddItem(item);
+            }
+            else if (item != null && item.IsFabricator)
+            {
+                // Did we step on a fabricator?
+                Game.Instance.InputMode = InputMode.Fabricator;
+                Game.Instance.ClearRequested = true;
             }
 
             UpdateVision();
@@ -187,6 +226,9 @@ namespace LD36Quill18
             {
                 // random amount of monies
                 int m = Game.Instance.Random.Next(50, 100);
+
+                m = (int)((double)m * Math.Pow( 1.25, Game.Instance.Map.CurrentFloorIndex  ));
+
                 this.Money += m;
                 Game.Instance.Message(string.Format("Picked up {0} units of metal scraps.", m));
                 return;

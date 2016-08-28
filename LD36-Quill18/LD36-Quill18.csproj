@@ -55,6 +55,7 @@
     <Compile Include="KeyboardHandler.cs" />
     <Compile Include="LookingOverlay.cs" />
     <Compile Include="Utility.cs" />
+    <Compile Include="FabricatorUpgrade.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

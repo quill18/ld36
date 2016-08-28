@@ -74,12 +74,12 @@ namespace LD36Quill18
 
             c = 'r';
             Monsters[c] = new MonsterCharacter();       // Medium Range, doesn't run away
-            Monsters[c].Name = "Tuboid Reporter";
+            Monsters[c].Name = "Reptoid Marksman";
             Monsters[c].Description = "";
             Monsters[c].Chixel = new Chixel(c, ConsoleColor.Red);
-            Monsters[c].Health = Monsters[c].MaxHealth = 10;
-            Monsters[c].MeleeDamage = 5;
-            Monsters[c].RangedDamage = 5;
+            Monsters[c].Health = Monsters[c].MaxHealth = 5;
+            Monsters[c].MeleeDamage = 2;
+            Monsters[c].RangedDamage = 2;
             Monsters[c].RangedAmmo = 5;
             Monsters[c].MaximumRange = 7;
 
