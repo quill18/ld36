@@ -52,8 +52,8 @@ namespace LD36Quill18
                 // Spawn a bit of scrap metal
                 Item item = new Item();
                 item.Name = "Metal Scraps";
-                item.Description = "Useless by itself, but can be used to provide raw matter to a 3D Fabricator.";
-                item.Value = 25;
+                item.Description = "Useless by itself, but can be used to provide raw matter to an Augmentation Station.";
+                item.Value = 50;
                 item.Chixel = new Chixel('$', ConsoleColor.Yellow);
                 Tile.Item = item;
             }

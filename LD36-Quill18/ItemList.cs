@@ -65,7 +65,7 @@ namespace LD36Quill18
             c = '$';
             Items[c] = new Item();
             Items[c].Name = "Metal Scraps";
-			Items[c].Description = "Useless by itself, but can be used to provide raw matter to a 3D Fabricator.";
+			Items[c].Description = "Useless by itself, but can be used to provide raw matter to an Augmentation Station.";
 			Items[c].Value = 100;
             Items[c].Chixel = new Chixel(c, ConsoleColor.Yellow);
 

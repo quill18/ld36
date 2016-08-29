@@ -246,9 +246,12 @@ namespace LD36Quill18
                     {
                         if (inventoryDeleteMode)
                         {
-                            Game.Instance.Message(PlayerCharacter.Instance.Items[i].Name + " has been scrapped for $10");
-                            PlayerCharacter.Instance.RemoveItem(i);
-                            PlayerCharacter.Instance.Money += 10;
+                            if (PlayerCharacter.Instance.Items[i] != null)
+                            {
+                                Game.Instance.Message(PlayerCharacter.Instance.Items[i].Name + " has been scrapped for $10");
+                                PlayerCharacter.Instance.RemoveItem(i);
+                                PlayerCharacter.Instance.Money += 10;
+                            }
                         }
                         else 
                         {
