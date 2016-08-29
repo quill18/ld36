@@ -14,7 +14,7 @@ namespace LD36Quill18
             c = 'f';
             Monsters[c] = new MonsterCharacter();
             Monsters[c].Name = "Reptoid Footsoldier";
-            Monsters[c].Description = "";
+            Monsters[c].Description = "The back-bone of the Reptoid army. Dangerous in large numbers.";
             Monsters[c].Chixel = new Chixel(c, ConsoleColor.Magenta);
             Monsters[c].Health = Monsters[c].MaxHealth = 5;
             Monsters[c].MeleeDamage = 4;
@@ -22,7 +22,7 @@ namespace LD36Quill18
             c = 'm';
             Monsters[c] = new MonsterCharacter();
             Monsters[c].Name = "Tuboid Marauder";
-            Monsters[c].Description = "";
+            Monsters[c].Description = "An extremely deadly and fearsome beast.";
             Monsters[c].Chixel = new Chixel(c, ConsoleColor.Magenta);
             Monsters[c].Health = Monsters[c].MaxHealth = 5;
             Monsters[c].MeleeDamage = 10;
@@ -31,7 +31,7 @@ namespace LD36Quill18
             c = 'i';
             Monsters[c] = new MonsterCharacter();       // TODO: NEEDS TO BE FAST
             Monsters[c].Name = "Reptoid Infiltrator";
-            Monsters[c].Description = "";
+            Monsters[c].Description = "Reptoid special forces -- tougher than a footsoldier.";
             Monsters[c].Chixel = new Chixel(c, ConsoleColor.Magenta);
             Monsters[c].Health = Monsters[c].MaxHealth = 10;
             Monsters[c].MeleeDamage = 6;
@@ -40,7 +40,7 @@ namespace LD36Quill18
             c = 't';
             Monsters[c] = new MonsterCharacter();
             Monsters[c].Name = "Behemoid Taskmaster";
-            Monsters[c].Description = "";
+            Monsters[c].Description = "A massive, hulking, melee death machine. Very durable.";
             Monsters[c].Chixel = new Chixel(c, ConsoleColor.Magenta);
             Monsters[c].Health = Monsters[c].MaxHealth = 20;
             Monsters[c].MeleeDamage = 10;
@@ -51,7 +51,7 @@ namespace LD36Quill18
             c = 'a';
             Monsters[c] = new MonsterCharacter();       // Runs away, fires at long range
             Monsters[c].Name = "Reptoid Sniper";
-            Monsters[c].Description = "";
+            Monsters[c].Description = "Likes to employ hit-and-run tactics.";
             Monsters[c].Chixel = new Chixel(c, ConsoleColor.Magenta);
             Monsters[c].Health = Monsters[c].MaxHealth = 3;
             Monsters[c].MeleeDamage = 2;
@@ -63,7 +63,7 @@ namespace LD36Quill18
             c = 's';
             Monsters[c] = new MonsterCharacter();           // Toss 1 spear at short range, then charge into melee.
             Monsters[c].Name = "Behemoid Siegebreaker";
-            Monsters[c].Description = "";
+            Monsters[c].Description = "Carries a single, massive javelin to toss.";
             Monsters[c].Chixel = new Chixel(c, ConsoleColor.Magenta);
             Monsters[c].Health = Monsters[c].MaxHealth = 20;
             Monsters[c].MeleeDamage = 10;
@@ -75,7 +75,7 @@ namespace LD36Quill18
             c = 'r';
             Monsters[c] = new MonsterCharacter();       // Medium Range, doesn't run away
             Monsters[c].Name = "Reptoid Marksman";
-            Monsters[c].Description = "";
+            Monsters[c].Description = "The primary ranged fighter of the Reptoid military.";
             Monsters[c].Chixel = new Chixel(c, ConsoleColor.Magenta);
             Monsters[c].Health = Monsters[c].MaxHealth = 5;
             Monsters[c].MeleeDamage = 2;

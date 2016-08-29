@@ -74,7 +74,10 @@ namespace LD36Quill18
         {
             FabricatorUpgrades = new FabricatorUpgrade[] {
                 new FabricatorUpgrade("Improved Impact Dampening (+10 Max Health)", (pc) => { pc.MaxHealth += 10; pc.Health += 10; }),
-                new FabricatorUpgrade("Add External Battery Pack (+0.0050% Max Energy)", (pc) => { pc.MaxEnergy += 50; pc.Energy += 50; }),
+                new FabricatorUpgrade("Wiring Improvements (10% More Energy from Batteries)", (pc) => { 
+                    pc.MaxEnergy = (int)(pc.MaxEnergy * 1.1);
+                    pc.batteryEfficiency += 0.1;
+                }),
                 new FabricatorUpgrade("Upgrade Sensors (+1 Vision Range)", (pc) => { pc.VisionRadius += 1; }),
                 new FabricatorUpgrade("Add Armor Plating (+1 Damage Reduction)", (pc) => { pc.DamageReduction += 1; }),
                 new FabricatorUpgrade("Servo Actuator Replacement (+1 to Dodging)", (pc) => { pc.DodgeBonus += 1; }),
@@ -123,10 +126,19 @@ namespace LD36Quill18
                 if (aimingOverlay != null)
                 {
                     aimingOverlay.Draw();
+                    string s = "[ESC] to leave Targetting Mode";
+                    FrameBuffer.Instance.Write(20, 0, s);
+                    Rect r = new Rect(20, 0, s.Length, 1);
+                    RedrawRequests.Rects.Add(r);
                 }
+
                 if (lookingOverlay != null)
                 {
                     lookingOverlay.Draw();
+                    string s = "[ESC] to leave Looking Mode";
+                    FrameBuffer.Instance.Write(20, 0, s);
+                    Rect r = new Rect(20, 0, s.Length, 1);
+                    RedrawRequests.Rects.Add(r);
                 }
 
                 PrintStats();
@@ -185,7 +197,10 @@ namespace LD36Quill18
         public void DebugMessage(string m)
         {
             // check debug flag
-            Message("[DEBUG] " + m);
+            if (false)
+            {
+                Message("[DEBUG] " + m);
+            }
         }
 
         public void DoTick()
@@ -215,18 +230,43 @@ namespace LD36Quill18
 
             y = 0;
             x++;
-            
-            if (PlayerCharacter != null)
+
+            if (PlayerCharacter != null && lookingOverlay == null && aimingOverlay == null)
             {
                 //Console.Write("HP: {0}/{1}", PlayerCharacter.Health, PlayerCharacter.MaxHealth);
                 frameBuffer.Write(x, y, "  == STATS ==   ");
                 y++;
-                frameBuffer.Write(x, y, string.Format("HP: {0}/{1}", PlayerCharacter.Health, PlayerCharacter.MaxHealth));
+
+                ConsoleColor col = ConsoleColor.White;
+                if (PlayerCharacter.Health < 10)
+                    col = ConsoleColor.Red;
+                else if (PlayerCharacter.Health < 50)
+                    col = ConsoleColor.Yellow;
+                frameBuffer.Write(x, y, string.Format("HP: {0}/{1}", PlayerCharacter.Health, PlayerCharacter.MaxHealth), col);
                 y++;
-                frameBuffer.Write(x, y, string.Format("Energy: 0.{0}%", PlayerCharacter.Energy.ToString("d4")));
+
+                col = ConsoleColor.White;
+                if (PlayerCharacter.Energy < 10)
+                    col = ConsoleColor.Red;
+                else if (PlayerCharacter.Energy < 50)
+                    col = ConsoleColor.Yellow;
+                frameBuffer.Write(x, y, string.Format("Energy: 0.{0}%", PlayerCharacter.Energy.ToString("d4")), col);
+                y++;
+
+                frameBuffer.Write(x, y, string.Format("   Max: 0.{0}%", PlayerCharacter.MaxEnergy.ToString("d4")));
+                y++;
+                frameBuffer.Write(x, y, string.Format("Melee Dmg: {0}", PlayerCharacter.MeleeDamage));
+                y++;
+                frameBuffer.Write(x, y, string.Format("Ranged Dmg: {0}", PlayerCharacter.RangedDamage));
+                y++;
+                frameBuffer.Write(x, y, string.Format("Acc Bonus: +{0}", PlayerCharacter.ToHitBonus));
+                y++;
+                frameBuffer.Write(x, y, string.Format("Dodge Bonus: +{0}", PlayerCharacter.DodgeBonus));
                 y++;
                 frameBuffer.Write(x, y, string.Format("Scraps: ${0}", PlayerCharacter.Money));
                 y++;
+                y++;
+                frameBuffer.Write(x, y, string.Format("Sub-Level: {0}", (Map.CurrentFloorIndex+5)));
 
 
             }
@@ -305,7 +345,7 @@ namespace LD36Quill18
             y++;
             frameBuffer.Write(x, y, "[I]nventory");
             y++;
-            frameBuffer.Write(x, y, "[L]ook");
+            frameBuffer.Write(x, y, "[L]ook Mode");
             y++;
             frameBuffer.Write(x, y, "< Go Up");
             y++;
@@ -377,14 +417,18 @@ namespace LD36Quill18
             }
             else
             {
-                FrameBuffer.Instance.Write(20, 2, "Hit [TAB] to See Equiped");
-
                 ConsoleColor col = ConsoleColor.White;
+                FrameBuffer.Instance.Write(20, 2, "Hit [TAB] to See Equipped");
+                FrameBuffer.Instance.Write(5, 3, "Hit [DELETE] followed by a letter to scrap an item.", col);
+
                 if (KeyboardHandler.inventoryDeleteMode == true)
                 {
                     col = ConsoleColor.Red;
                 }
-                FrameBuffer.Instance.Write(5, 3, "Hit [DELETE] followed by a letter to scrap an item.", col);
+                else if (KeyboardHandler.inventoryExamineMode == true)
+                {
+                    col = ConsoleColor.Blue;
+                }
 
                 for (int i = 0; i < PlayerCharacter.Instance.Items.Length; i++)
                 {
@@ -463,7 +507,7 @@ namespace LD36Quill18
 
             while (true)
             {
-                Console.WriteLine("Abort, Retry, Ignore?");
+                Console.WriteLine("[A]bort, [R]etry, [I]gnore?");
                 string s = Console.ReadLine();
                 if (s.ToLower() == "abort" || s.ToLower() == "a")
                 {

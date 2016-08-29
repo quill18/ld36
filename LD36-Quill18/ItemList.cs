@@ -14,7 +14,7 @@ namespace LD36Quill18
             c = '%';
             Items[c] = new Item();
             Items[c].Name = "Small Battery (9v)";
-            Items[c].Description = "Enough for a few more steps.";
+            Items[c].Description = "Enough for a few more steps. (Use it to gain energy.)";
             Items[c].Chixel = new Chixel(c, ConsoleColor.Green);
             Items[c].OnUse += (item) => { OnUse_ChangeEnergy(item, 90); };
             Items[c].UsesLeft = 1;
@@ -22,7 +22,7 @@ namespace LD36Quill18
             c = 'B';
             Items[c] = new Item();
             Items[c].Name = "Industrial Battery (24v)";
-            Items[c].Description = "Oooooh...that's the stuff!";
+            Items[c].Description = "Oooooh...that's the stuff! (Use it to gain a LOT of energy.)";
             Items[c].Chixel = new Chixel(c, ConsoleColor.Green);
             Items[c].OnUse += (item) => { OnUse_ChangeEnergy(item, 240); };
             Items[c].UsesLeft = 1;
@@ -31,7 +31,7 @@ namespace LD36Quill18
             c = 'W';
             Items[c] = new Item();
             Items[c].Name = "Welding Kit";
-            Items[c].Description = "Enough to seal a few holes in your armor plating.";
+            Items[c].Description = "Enough to seal a few holes in your armor plating. (Heals you a good amount.)";
             Items[c].Chixel = new Chixel(c, ConsoleColor.Green);
             Items[c].OnUse += (item) => { OnUse_Heal(item, 35); };
             Items[c].UsesLeft = 1;
@@ -39,7 +39,7 @@ namespace LD36Quill18
             c = 'w';
             Items[c] = new Item();
             Items[c].Name = "WD-41";
-            Items[c].Description = "Helps keep your joints moving!";
+            Items[c].Description = "Helps keep your joints moving! (Heals you a little.)";
             Items[c].Chixel = new Chixel(c, ConsoleColor.Green);
             Items[c].OnUse += (item) => { OnUse_Heal(item, 15); };
             Items[c].UsesLeft = 1;
@@ -47,7 +47,7 @@ namespace LD36Quill18
             c = 'D';
             Items[c] = new Item();
             Items[c].Name = "Duct Tape";
-            Items[c].Description = "Cures what ails you!";
+            Items[c].Description = "Cures what ails you! (Heals you a LOT.)";
             Items[c].Chixel = new Chixel(c, ConsoleColor.Green);
             Items[c].OnUse += (item) => { OnUse_Heal(item, 100); };
             Items[c].UsesLeft = 1;
@@ -57,7 +57,7 @@ namespace LD36Quill18
             c = '!';
             Items[c] = new Item();
             Items[c].Name = "Access Pass";
-            Items[c].Description = "A single-use keycard -- security used to be very strict.";
+            Items[c].Description = "A single-use keycard -- security used to be very strict. (Used automatically.)";
             Items[c].Chixel = new Chixel(c, ConsoleColor.Yellow);
             Items[c].UsesLeft = 1;
             Items[c].IsKey = true;
@@ -94,7 +94,7 @@ namespace LD36Quill18
         public static void OnUse_ChangeEnergy(Item item, int amt)
         {
             //frameBuffer.Write(x, y, string.Format("Energy: 0.{0}%", PlayerCharacter.Energy.ToString("d4")));
-
+            amt = (int)(amt * PlayerCharacter.Instance.batteryEfficiency);
             PlayerCharacter.Instance.Energy += amt;
             Game.Instance.Message( Utility.WordWrap( string.Format("You gained 0.{0}% energy.\nCurrent Energy: 0.{1}% (Max Capacity: 0.{2}%) ",
                                                 amt.ToString("d4"),

@@ -10,9 +10,9 @@ namespace LD36Quill18
            ##############################
            #                            #             ###############
            #               f            #             #   W     w   #
-           #   >                        ###############      1      #
+           #%  >                        ###############      1      #
            #         r                  +             +      f      #
-           #                            ###############             #
+           #%                           ###############             #
            #               f            #             #             #      #####
            #                            #             #######*#######      # 0 #
            ##############################                   # #            #   #         
@@ -25,9 +25,9 @@ namespace LD36Quill18
                                     ##            ##    #####+#############                                            
                                     #&     C2     &#    #                 #                                            
                                     ##            ##    #    π   !   π    #                                            
-                                    #&            &#    #                 #                                            
-                                    ##            ##    #    f       f    #                                           
-                                    #&            &#    #                 #                                            
+                                    #&            &#    #                x#                                            
+                                    ##            ##    #    f       f  xx#                                           
+                                    #&            &#    #              xx<#                                            
                                     ################    ######++####++#####                                            
                                                             xxxxxxxxxxxx    
 ",            @"  Level 1 -- Fabrication
@@ -38,7 +38,7 @@ namespace LD36Quill18
                                              ## ##                                           
                        ########################+#######################                                        
                        #   $   $   $  ##              ##     {~}      #                                         
-                       #              ##              ##              #                                           
+                       #              ##       B      ##              #                                           
                        #»»»»»»»»»»»»»»++»»»»»»»»»»»»»»++»»»»»»»»»»»»»»# 
                        #              ##              ##              #                                         
                        #  0           ##              ##      r       #                                         
@@ -497,7 +497,7 @@ namespace LD36Quill18
                 item.Description = "A leftover from the Clan Wars. (+2 Dodge)";
                 item.Chixel = new Chixel('^', ConsoleColor.Blue);
                 item.OnUse += (i) => { PlayerCharacter.Instance.Equip(i); };
-                item.EquipSlot = EquipSlot.Head;
+                item.EquipSlot = EquipSlot.Legs;
                 item.OnEquip += (i, c) =>
                 {
                     c.DodgeBonus += 2;

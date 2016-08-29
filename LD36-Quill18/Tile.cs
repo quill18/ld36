@@ -49,7 +49,7 @@ namespace LD36Quill18
                 case '@':
 
                     // Spawn a character (only if one doesn't exist)
-                    Game.Instance.Message("Character spawned!");
+                    Game.Instance.DebugMessage("Character spawned!");
 
                     if (Game.Instance.PlayerCharacter != null)
                     {
@@ -150,6 +150,33 @@ namespace LD36Quill18
                 {
                     Chixel.ForegroundColor = ConsoleColor.Red;
                 }
+            }
+        }
+
+        public string Description
+        {
+            get
+            {
+                switch (TileType)
+                {
+                    case TileType.FLOOR:
+                        return "Empty floor.";
+                    case TileType.WALL:
+                        return "Sturdy steel wall.";
+                    case TileType.DOOR_CLOSED:
+                        return "A closed, but unlocked door.";
+                    case TileType.DOOR_OPENED:
+                        return "An open door.";
+                    case TileType.UPSTAIR:
+                        return "Stairs leading up.";
+                    case TileType.DOWNSTAIR:
+                        return "Stairs leading down.";
+                    case TileType.DEBRIS:
+                        return "Debris -- impassable, but you can shoot over it.";
+                    case TileType.DOOR_LOCKED:
+                        return "Locked door. Requires an access card.";
+                }
+                return "";
             }
         }
 

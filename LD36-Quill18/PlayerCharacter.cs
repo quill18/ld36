@@ -27,7 +27,7 @@ namespace LD36Quill18
 
             Items = new Item[26];
 
-            Name = "BE-02";
+            Name = "BE-02 (You!)";
             Description = "Covered in 4,000 years of dust, rust, and obsolescence.";
 
             Energy = MaxEnergy = 270;
@@ -68,6 +68,7 @@ namespace LD36Quill18
         public Item[] Items { get; set; }
         public int Money { get; set; }
         public bool HasRanged = false;
+        public double batteryEfficiency = 1.0;
 
         public int MaxEnergy
         { 

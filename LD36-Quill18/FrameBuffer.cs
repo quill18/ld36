@@ -67,6 +67,19 @@ namespace LD36Quill18
             }
         }
 
+        public Chixel GetChixel(int x, int y)
+        {
+            x -= Left;
+            y -= Top;
+            if (x < 0 || x >= Width || y < 0 || y >= Height)
+            {
+                //throw new Exception();
+                return null;
+            }
+
+            return this.chixels[x, y];
+        }
+
         public void SetChixel(int x, int y, Chixel chixel)
         {
             SetChixel(x, y, chixel.Glyph, chixel.ForegroundColor, chixel.BackgroundColor);

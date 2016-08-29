@@ -273,9 +273,15 @@ namespace LD36Quill18
                     Character victim = t.Character;
                     dmg = victim.TakeDamage(dmg);
 
+                    string andKillIt = "";
+                    if (victim.Health <= 0)
+                    {
+                        andKillIt = " and kill it";
+                    }
+
                     if (this == Game.Instance.PlayerCharacter)
                     {
-                        Game.Instance.Message(string.Format("You shoot {0} for {1} damage!", victim.Name, dmg));
+                        Game.Instance.Message(string.Format("You shoot {0} for {1} damage{2}!", victim.Name, dmg, andKillIt));
                     }
                     else {
                         Game.Instance.Message(string.Format("{0} shoots you for {1} damage!", this.Name, dmg));
@@ -323,12 +329,18 @@ namespace LD36Quill18
             int dmg = RollDamage(MeleeDamage);
             dmg = target.TakeDamage(dmg);
 
+            string andKillIt = "";
+            if (target.Health <= 0)
+            {
+                andKillIt = " and kill it";
+            }
+
             if (this == Game.Instance.PlayerCharacter)
             {
-                Game.Instance.Message(string.Format("You hit {0} for {1} damage!", target.Name, dmg));
+                Game.Instance.Message(string.Format("You hit {0} for {1} damage{2}!", target.Name, dmg,andKillIt));
             }
             else {
-                Game.Instance.Message(string.Format("{0} hits you for {1} damage!", this.Name, dmg));
+                Game.Instance.Message(string.Format("{0} hits you for {1} damage{2}!", this.Name, dmg,andKillIt));
             }
 
         }

@@ -11,7 +11,7 @@ namespace LD36Quill18
                 // Read one key
                 ConsoleKeyInfo cki = Console.ReadKey(true);
 
-                bool cheatsEnabled = true;
+                bool cheatsEnabled = false;
 
                 if (((cki.Modifiers & ConsoleModifiers.Control) != 0) && cki.Key == ConsoleKey.Q)
                 {
@@ -143,7 +143,7 @@ namespace LD36Quill18
             {
                 if (PlayerCharacter.Instance.HasRanged == false)
                 {
-                    Game.Instance.Message("No ranged weapon equipped.");
+                    Game.Instance.Message("No ranged weapon equipped. Try melee instead!");
                     return;
                 }
 
@@ -211,8 +211,12 @@ namespace LD36Quill18
                 if (i < 0 || (inventoryEquippedMode && i >= PlayerCharacter.Instance.EquippedItems.Length) ||
                    (!inventoryEquippedMode && i >= PlayerCharacter.Instance.Items.Length))
                 {
-                    // Out of bounds for inventory.
-                    return;
+                    i = (int)cki.KeyChar - 'A';
+                    if (i < 0 || (inventoryEquippedMode && i >= PlayerCharacter.Instance.EquippedItems.Length) ||
+   (!inventoryEquippedMode && i >= PlayerCharacter.Instance.Items.Length))
+                    {
+                        return;
+                    }
                 }
 
                 if (inventoryExamineMode)
@@ -333,6 +337,9 @@ namespace LD36Quill18
             else if (cki.Key == ConsoleKey.Enter)
             {
                 Tile tile = Game.Instance.Map.CurrentFloor.GetTile(overlay.X, overlay.Y);
+
+
+                Game.Instance.Message(Utility.WordWrap(tile.TileType.ToString() + ": " + tile.Description));
 
                 if (tile.Character != null)
                 {

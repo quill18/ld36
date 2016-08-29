@@ -73,11 +73,26 @@ namespace LD36Quill18
         {
             if (stopIntro)
                 return;
+            
+            Console.ForegroundColor = ConsoleColor.Green;
+
+            DoSleep(longPause);
+            Console.WriteLine("Wake-On-Lan -- Signal Received");
+            DoSleep(2000);
+            if (stopIntro)
+                return;
 
             Console.WriteLine("WARBOT 9000 OS Version 10.16 -- S/N BE-02");
-            DoSleep(longPause);
+            DoSleep(1000);
+            if (stopIntro)
+                return;
+            
             Console.WriteLine("BOOT SEQUENCE INITIATED");
-            DoSleep(longPause);
+            DoSleep(1000);
+
+            if (stopIntro)
+                return;
+
             for (int i = 0; i < 5; i++)
             {
                 Console.Write(".");
@@ -85,15 +100,15 @@ namespace LD36Quill18
                 DoSleep(30);
             }
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("...SYSTEM ERROR");
+            Console.WriteLine("SYSTEM ERROR");
+            Console.ForegroundColor = ConsoleColor.Green;
             DoSleep(longPause);
             //Console.Beep(1400, shortPause0);
 
             if (stopIntro)
                 return;
 
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.Write(Environment.NewLine);
+            //Console.ForegroundColor = ConsoleColor.White;
             Console.Write(Environment.NewLine);
             Console.WriteLine("Initiate systems check.");
             DoSleep(longPause);
@@ -102,54 +117,56 @@ namespace LD36Quill18
                 switch (i)
                 {
                     case 13:
-                        Console.ForegroundColor = ConsoleColor.Blue;
+                        //Console.ForegroundColor = ConsoleColor.Blue;
                         Console.Write(Environment.NewLine);
                         Console.WriteLine("Primary Sensors: Corroded, functions are degraded");
                         break;
                     case 18:
-                        Console.ForegroundColor = ConsoleColor.Red;
+                        //Console.ForegroundColor = ConsoleColor.Red;
                         Console.Write(Environment.NewLine);
                         Console.WriteLine("Kinetic Force Fields: Offline");
                         break;
                     case 32:
-                        Console.ForegroundColor = ConsoleColor.Blue;
+                        //Console.ForegroundColor = ConsoleColor.Blue;
                         Console.Write(Environment.NewLine);
                         Console.WriteLine("Vertical Thrusters: Fuel System Depleted");
                         break;
                     case 47:
-                        Console.ForegroundColor = ConsoleColor.Blue;
+                        //Console.ForegroundColor = ConsoleColor.Blue;
                         Console.Write(Environment.NewLine);
                         Console.WriteLine("Operating System: 5,213 updates pending");
                         break;
                     case 56:
-                        Console.ForegroundColor = ConsoleColor.Red;
+                        //Console.ForegroundColor = ConsoleColor.Red;
                         Console.Write(Environment.NewLine);
                         Console.WriteLine("Primary Weapons System: Inoperable");
-                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        //Console.ForegroundColor = ConsoleColor.Yellow;
                         Console.WriteLine("Secondary Weapons System: Limited kinetic impact available");
                         break;
                     case 98:
-                        Console.ForegroundColor = ConsoleColor.Red;
+                        //Console.ForegroundColor = ConsoleColor.Red;
                         Console.Write(Environment.NewLine);
                         Console.WriteLine("Primary Power Cell: 0.027% Charged");
-                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        //Console.ForegroundColor = ConsoleColor.Yellow;
                         DoSleep(longPause);
                         Console.WriteLine("Disabling non-essential functions.");
                         DoSleep(longPause);
                         Console.WriteLine("Redirecting reserve power to combat systems.");
                         DoSleep(longPause);
-                        Console.Write("Replacing primary power cell: ");
+                        Console.Write("Replace primary power cell: ");
                         Console.BackgroundColor = ConsoleColor.DarkRed;
                         Console.ForegroundColor = ConsoleColor.White;
                         Console.WriteLine("PRIORITY ALPHA");
                         ResetColor();
+                        Console.ForegroundColor = ConsoleColor.Green;
                         break;
                 }
                 Console.CursorLeft = 0;
-				ResetColor();
+				//ResetColor();
                 Console.Write("{0}% Complete", i);
-                DoSleep(10);
+                DoSleep(50);
             }
+            ResetColor();
         }
 
 		void ResetColor()
